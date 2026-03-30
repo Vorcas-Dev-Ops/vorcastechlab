@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
@@ -43,24 +44,47 @@ app.use('/api/contact', contactRoutes);
 
 // Serve React static files
 const buildPath = path.join(__dirname, '../dist');
-console.log('Serving static files from:', buildPath);
+const buildPathExists = fs.existsSync(buildPath);
 
-app.use(express.static(buildPath));
+console.log('Build path:', buildPath);
+console.log('Build exists:', buildPathExists ? '✅' : '❌');
 
-// SPA fallback - serve index.html for non-API routes
-app.use((req, res, next) => {
-  // Skip API routes and requests with file extensions
-  if (req.path.startsWith('/api') || /\.\w+$/.test(req.path)) {
-    return next();
-  }
+if (buildPathExists) {
+  app.use(express.static(buildPath));
+  console.log('✅ Serving static files from dist');
   
-  // For all other requests, serve index.html (SPA routing)
-  res.sendFile(path.join(buildPath, 'index.html'), (err) => {
-    if (err) {
-      res.status(404).json({ error: 'Page not found' });
+  // SPA fallback - serve index.html for non-API routes
+  app.use((req, res, next) => {
+    // Skip API routes and requests with file extensions
+    if (req.path.startsWith('/api') || /\.\w+$/.test(req.path)) {
+      return next();
+    }
+    
+    // For all other requests, serve index.html (SPA routing)
+    const indexPath = path.join(buildPath, 'index.html');
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          console.error('Error sending index.html:', err);
+          res.status(404).json({ error: 'Page not found' });
+        }
+      });
+    } else {
+      res.status(404).json({ error: 'index.html not found' });
     }
   });
-});
+} else {
+  console.warn('⚠️ Build folder not found at', buildPath);
+  console.warn('⚠️ API only mode - React frontend not available');
+  
+  // Still serve API - use middleware instead of app.get('*')
+  app.use((req, res, next) => {
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
+    res.status(404).json({ error: 'Frontend build not available. Run: npm run build' });
+  });
+}
 
 // 404 handler for API routes that don't exist
 app.use('/api', (req, res) => {
