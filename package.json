@@ -10,9 +10,7 @@
     "preview": "vite preview",
     "start": "node server/index.js",
     "server": "node server/index.js",
-    "server-dev": "nodemon server/index.js",
-    "install:all": "npm install && cd server && npm install && cd ..",
-    "production": "npm install && cd server && npm install && cd .. && npm start"
+    "server-dev": "nodemon server/index.js"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
