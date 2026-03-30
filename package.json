@@ -13,7 +13,6 @@
     "server-dev": "nodemon server/index.js"
   },
   "dependencies": {
-    "@studio-freight/lenis": "^1.0.42",
     "@tailwindcss/vite": "^4.2.1",
     "aos": "^2.3.4",
     "axios": "^1.13.6",
@@ -26,6 +25,7 @@
     "express-async-handler": "^1.2.0",
     "framer-motion": "^12.38.0",
     "jsonwebtoken": "^9.0.3",
+    "lenis": "^1.1.8",
     "lucide-react": "^0.577.0",
     "mongoose": "^9.3.0",
     "multer": "^2.1.1",
