@@ -67,7 +67,11 @@ try {
   app.use('/api/contact', contactRoutes);
 
   // Serve React static files
-  const buildPath = path.join(__dirname, '../dist');
+  // On Hostinger, the build output is in public_html root, not in a dist/ subfolder
+  const buildPath = process.env.NODE_ENV === 'production' 
+    ? __dirname.replace(/\/server$/, '') // Production: use parent directory (public_html)
+    : path.join(__dirname, '../dist'); // Development: use dist/
+    
   const buildPathExists = fs.existsSync(buildPath);
   const indexPath = buildPath ? path.join(buildPath, 'index.html') : null;
   const indexExists = indexPath ? fs.existsSync(indexPath) : false;
