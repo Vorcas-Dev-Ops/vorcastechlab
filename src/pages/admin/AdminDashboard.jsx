@@ -65,7 +65,7 @@ const ProjectsManager = ({ token }) => {
 
     const fetchProjects = async () => {
         try {
-            const { data } = await axios.get('http://localhost:5000/api/projects');
+            const { data } = await axios.get('/api/projects');
             setProjects(data);
         } catch (error) { console.error(error); }
     };
@@ -121,12 +121,12 @@ const ProjectsManager = ({ token }) => {
             data.append('images', JSON.stringify(finalGallery));
             
             if (isEditing) {
-                await axios.put(`http://localhost:5000/api/projects/${editingId}`, data, {
+                await axios.put(`/api/projects/${editingId}`, data, {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 alert('Project updated!');
             } else {
-                await axios.post('http://localhost:5000/api/projects', data, {
+                await axios.post('/api/projects', data, {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
                 });
                 alert('Project published!');
@@ -161,7 +161,7 @@ const ProjectsManager = ({ token }) => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete project?')) {
-            await axios.delete(`http://localhost:5000/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.delete(`/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
             fetchProjects();
         }
     };
@@ -287,7 +287,7 @@ const CareersManager = ({ token }) => {
     const [editingId, setEditingId] = useState(null);
 
     const fetchCareers = async () => {
-        try { const { data } = await axios.get('http://localhost:5000/api/careers'); setCareers(data); }
+        try { const { data } = await axios.get('/api/careers'); setCareers(data); }
         catch (error) { console.error(error); }
     };
 
@@ -309,10 +309,10 @@ const CareersManager = ({ token }) => {
             };
             
             if (isEditing) {
-                await axios.put(`http://localhost:5000/api/careers/${editingId}`, payload, { headers: { Authorization: `Bearer ${token}` } });
+                await axios.put(`/api/careers/${editingId}`, payload, { headers: { Authorization: `Bearer ${token}` } });
                 alert('Job Updated!');
             } else {
-                await axios.post('http://localhost:5000/api/careers', payload, { headers: { Authorization: `Bearer ${token}` } });
+                await axios.post('/api/careers', payload, { headers: { Authorization: `Bearer ${token}` } });
                 alert('Job Posted!');
             }
             fetchCareers();
@@ -339,7 +339,7 @@ const CareersManager = ({ token }) => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete job?')) {
-            await axios.delete(`http://localhost:5000/api/careers/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.delete(`/api/careers/${id}`, { headers: { Authorization: `Bearer ${token}` } });
             fetchCareers();
         }
     };
@@ -405,7 +405,7 @@ const BlogsManager = ({ token }) => {
     const [editingId, setEditingId] = useState(null);
 
     const fetchBlogs = async () => {
-        try { const { data } = await axios.get('http://localhost:5000/api/blogs'); setBlogs(data); }
+        try { const { data } = await axios.get('/api/blogs'); setBlogs(data); }
         catch (error) { console.error(error); }
     };
     useEffect(() => { fetchBlogs(); }, []);
@@ -426,10 +426,10 @@ const BlogsManager = ({ token }) => {
             if (image) data.append('image', image);
             
             if (isEditing) {
-                await axios.put(`http://localhost:5000/api/blogs/${editingId}`, data, { headers: { Authorization: `Bearer ${token}` } });
+                await axios.put(`/api/blogs/${editingId}`, data, { headers: { Authorization: `Bearer ${token}` } });
                 alert('Blog Updated!');
             } else {
-                await axios.post('http://localhost:5000/api/blogs', data, { headers: { Authorization: `Bearer ${token}` } });
+                await axios.post('/api/blogs', data, { headers: { Authorization: `Bearer ${token}` } });
                 alert('Daily Blog Published!');
             }
             fetchBlogs();
@@ -453,7 +453,7 @@ const BlogsManager = ({ token }) => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete blog?')) {
-            await axios.delete(`http://localhost:5000/api/blogs/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+            await axios.delete(`/api/blogs/${id}`, { headers: { Authorization: `Bearer ${token}` } });
             fetchBlogs();
         }
     };
