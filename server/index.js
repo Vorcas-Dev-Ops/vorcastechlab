@@ -67,17 +67,29 @@ try {
   app.use('/api/contact', contactRoutes);
 
   // Serve React static files
-  // On Hostinger, the build output is in public_html root, not in a dist/ subfolder
-  const buildPath = process.env.NODE_ENV === 'production' 
-    ? __dirname.replace(/\/server$/, '') // Production: use parent directory (public_html)
-    : path.join(__dirname, '../dist'); // Development: use dist/
-    
-  const buildPathExists = fs.existsSync(buildPath);
+  // Try multiple possible locations for the build
+  let buildPath = null;
+  
+  // Try 1: dist folder (local development)
+  if (fs.existsSync(path.join(__dirname, '../dist'))) {
+    buildPath = path.join(__dirname, '../dist');
+    log('Found build at: ../dist');
+  }
+  // Try 2: public_html root (Hostinger production - files uploaded directly)
+  else if (fs.existsSync(path.join(__dirname, '../index.html'))) {
+    buildPath = path.join(__dirname, '..');
+    log('Found build at: parent directory (Hostinger)');
+  }
+  // Try 3: Current directory
+  else if (fs.existsSync(path.join(__dirname, 'index.html'))) {
+    buildPath = __dirname;
+    log('Found build at: current directory');
+  }
+  
   const indexPath = buildPath ? path.join(buildPath, 'index.html') : null;
-  const indexExists = indexPath ? fs.existsSync(indexPath) : false;
+  const indexExists = indexPath && fs.existsSync(indexPath);
 
-  log('Build path: ' + buildPath);
-  log('Build exists: ' + (buildPathExists ? '✅' : '❌'));
+  log('Build path: ' + (buildPath || 'NOT FOUND'));
   log('index.html exists: ' + (indexExists ? '✅' : '❌'));
 
   if (indexExists) {
@@ -96,8 +108,8 @@ try {
   } else {
     log('❌ Frontend files not found - serving API only');
     
-    // Minimal fallback
-    app.get('*', (req, res) => {
+    // Minimal fallback - use middleware, not app.get('*')
+    app.use((req, res) => {
       res.status(503).json({ error: 'Server temporarily unavailable' });
     });
   }
