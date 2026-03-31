@@ -66,8 +66,8 @@ try {
   app.use('/api/blogs', blogRoutes);
   app.use('/api/contact', contactRoutes);
 
-  // Serve React static files
-  const buildPath = path.join(__dirname, '..');
+  // Serve React static files from dist folder
+  const buildPath = path.join(__dirname, '../dist');
   const indexPath = path.join(buildPath, 'index.html');
   const indexExists = fs.existsSync(indexPath);
 
@@ -75,11 +75,8 @@ try {
   log('index.html path: ' + indexPath);
   log('index.html exists: ' + (indexExists ? '✅' : '❌'));
 
-  // Serve all static files from parent directory
-  app.use(express.static(buildPath, { 
-    index: false,  // Don't auto-serve index.html
-    etag: false 
-  }));
+  // Serve all static files from dist directory
+  app.use(express.static(buildPath));
   log('✅ Static file serving configured');
 
   // SPA fallback - serve index.html for non-API routes
@@ -95,7 +92,6 @@ try {
       return res.status(503).json({ error: 'Frontend not available' });
     }
     
-    log('Sending index.html for: ' + req.path);
     res.sendFile(indexPath, (err) => {
       if (err) {
         logError('Failed to send index.html', err);
