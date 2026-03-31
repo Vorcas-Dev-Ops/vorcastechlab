@@ -74,44 +74,33 @@ try {
   log('Build exists: ' + (buildPathExists ? '✅' : '❌'));
 
   if (buildPathExists) {
+    // Serve static assets (CSS, JS, images, fonts, etc.)
     app.use(express.static(buildPath));
     log('✅ Serving static files from dist');
     
-    // SPA fallback - serve index.html for non-API routes
+    // SPA fallback - serve index.html for ALL non-API routes
     app.use((req, res, next) => {
-      // Skip API routes and requests with file extensions
-      if (req.path.startsWith('/api') || /\.\w+$/.test(req.path)) {
+      // Let API routes through
+      if (req.path.startsWith('/api')) {
         return next();
       }
       
-      // For all other requests, serve index.html (SPA routing)
+      // For all other routes (including /admin/login), serve index.html
       const indexPath = path.join(buildPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath, (err) => {
-          if (err) {
-            logError('Error sending index.html', err);
-            res.status(404).json({ error: 'Page not found' });
-          }
-        });
-      } else {
-        res.status(404).json({ error: 'index.html not found' });
-      }
+      res.sendFile(indexPath, (err) => {
+        if (err) {
+          logError('Error sending index.html for ' + req.path, err);
+          res.status(500).json({ error: 'Could not load page' });
+        }
+      });
     });
   } else {
     log('⚠️ Build folder not found at ' + buildPath);
     log('⚠️ API only mode - React frontend not available');
-    
-    // Still serve API - use middleware instead of app.get('*')
-    app.use((req, res, next) => {
-      if (req.path.startsWith('/api')) {
-        return next();
-      }
-      res.status(404).json({ error: 'Frontend build not available. Run: npm run build' });
-    });
   }
 
-  // 404 handler for API routes that don't exist
-  app.use('/api', (req, res) => {
+  // 404 handler for unmatched API routes
+  app.use((req, res) => {
     res.status(404).json({ error: 'API endpoint not found' });
   });
 
