@@ -67,52 +67,42 @@ try {
   app.use('/api/contact', contactRoutes);
 
   // Serve React static files
-  // Try multiple possible locations for the build
-  let buildPath = null;
-  
-  // Try 1: dist folder (local development)
-  if (fs.existsSync(path.join(__dirname, '../dist'))) {
-    buildPath = path.join(__dirname, '../dist');
-    log('Found build at: ../dist');
-  }
-  // Try 2: public_html root (Hostinger production - files uploaded directly)
-  else if (fs.existsSync(path.join(__dirname, '../index.html'))) {
-    buildPath = path.join(__dirname, '..');
-    log('Found build at: parent directory (Hostinger)');
-  }
-  // Try 3: Current directory
-  else if (fs.existsSync(path.join(__dirname, 'index.html'))) {
-    buildPath = __dirname;
-    log('Found build at: current directory');
-  }
-  
-  const indexPath = buildPath ? path.join(buildPath, 'index.html') : null;
-  const indexExists = indexPath && fs.existsSync(indexPath);
+  const buildPath = path.join(__dirname, '..');
+  const indexPath = path.join(buildPath, 'index.html');
+  const indexExists = fs.existsSync(indexPath);
 
-  log('Build path: ' + (buildPath || 'NOT FOUND'));
+  log('Build path: ' + buildPath);
+  log('index.html path: ' + indexPath);
   log('index.html exists: ' + (indexExists ? '✅' : '❌'));
 
-  if (indexExists) {
-    // Serve static assets
-    app.use(express.static(buildPath));
-    log('✅ Serving frontend from dist/');
+  // Serve all static files from parent directory
+  app.use(express.static(buildPath, { 
+    index: false,  // Don't auto-serve index.html
+    etag: false 
+  }));
+  log('✅ Static file serving configured');
+
+  // SPA fallback - serve index.html for non-API routes
+  app.use((req, res, next) => {
+    // Skip API routes
+    if (req.path.startsWith('/api')) {
+      return next();
+    }
     
-    // Catch all - serve index.html for client-side routing (use middleware, not app.get('*'))
-    app.use((req, res) => {
-      // Don't intercept API routes
-      if (req.path.startsWith('/api')) {
-        return res.status(404).json({ error: 'API endpoint not found' });
+    // For all other routes, try to serve index.html
+    if (!indexExists) {
+      log('❌ index.html not found at: ' + indexPath);
+      return res.status(503).json({ error: 'Frontend not available' });
+    }
+    
+    log('Sending index.html for: ' + req.path);
+    res.sendFile(indexPath, (err) => {
+      if (err) {
+        logError('Failed to send index.html', err);
+        res.status(500).json({ error: 'Failed to load page' });
       }
-      res.sendFile(indexPath);
     });
-  } else {
-    log('❌ Frontend files not found - serving API only');
-    
-    // Minimal fallback - use middleware, not app.get('*')
-    app.use((req, res) => {
-      res.status(503).json({ error: 'Server temporarily unavailable' });
-    });
-  }
+  });
 
   const PORT = process.env.PORT || 5000;
 
