@@ -79,30 +79,33 @@ try {
     log('✅ Serving static files from dist');
     
     // SPA fallback - serve index.html for ALL non-API routes
-    app.use((req, res, next) => {
-      // Let API routes through
+    app.use((req, res) => {
+      // Let API routes be handled by the 404 below
       if (req.path.startsWith('/api')) {
-        return next();
+        return res.status(404).json({ error: 'API endpoint not found' });
       }
       
       // For all other routes (including /admin/login), serve index.html
       const indexPath = path.join(buildPath, 'index.html');
-      res.sendFile(indexPath, (err) => {
-        if (err) {
-          logError('Error sending index.html for ' + req.path, err);
-          res.status(500).json({ error: 'Could not load page' });
-        }
-      });
+      if (fs.existsSync(indexPath)) {
+        log('Serving index.html for route: ' + req.path);
+        res.sendFile(indexPath);
+      } else {
+        logError('index.html not found at ' + indexPath, new Error('Missing index.html'));
+        res.status(500).json({ error: 'Frontend not available' });
+      }
     });
   } else {
     log('⚠️ Build folder not found at ' + buildPath);
-    log('⚠️ API only mode - React frontend not available');
+    
+    // Fallback for API only mode
+    app.use((req, res) => {
+      if (req.path.startsWith('/api')) {
+        return res.status(404).json({ error: 'API endpoint not found' });
+      }
+      res.status(503).json({ error: 'Frontend build not available' });
+    });
   }
-
-  // 404 handler for unmatched API routes
-  app.use((req, res) => {
-    res.status(404).json({ error: 'API endpoint not found' });
-  });
 
   const PORT = process.env.PORT || 5000;
 
