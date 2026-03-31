@@ -155,8 +155,7 @@ export default function Navbar() {
     { id: "projects", label: "Projects", fn: goToProjects, type: "scroll" },
     { id: "tech-stack", label: "Tech Stack", fn: goToTechStack, type: "scroll" },
     { id: "contact", label: "Contact", fn: goContact, type: "scroll" },
-    { id: "career", label: "Careers", path: "/career", type: "link" },
-    { id: "admin", label: "Admin", path: "/admin/login", type: "link" }
+    { id: "career", label: "Careers", path: "/career", type: "link" }
   ];
 
 
