@@ -69,41 +69,32 @@ try {
   // Serve React static files
   const buildPath = path.join(__dirname, '../dist');
   const buildPathExists = fs.existsSync(buildPath);
+  const indexPath = buildPath ? path.join(buildPath, 'index.html') : null;
+  const indexExists = indexPath ? fs.existsSync(indexPath) : false;
 
   log('Build path: ' + buildPath);
   log('Build exists: ' + (buildPathExists ? '✅' : '❌'));
+  log('index.html exists: ' + (indexExists ? '✅' : '❌'));
 
-  if (buildPathExists) {
-    // Serve static assets (CSS, JS, images, fonts, etc.)
+  if (indexExists) {
+    // Serve static assets
     app.use(express.static(buildPath));
-    log('✅ Serving static files from dist');
+    log('✅ Serving frontend from dist/');
     
-    // SPA fallback - serve index.html for ALL non-API routes
+    // Catch all - serve index.html for client-side routing (use middleware, not app.get('*'))
     app.use((req, res) => {
-      // Let API routes be handled by the 404 below
+      // Don't intercept API routes
       if (req.path.startsWith('/api')) {
         return res.status(404).json({ error: 'API endpoint not found' });
       }
-      
-      // For all other routes (including /admin/login), serve index.html
-      const indexPath = path.join(buildPath, 'index.html');
-      if (fs.existsSync(indexPath)) {
-        log('Serving index.html for route: ' + req.path);
-        res.sendFile(indexPath);
-      } else {
-        logError('index.html not found at ' + indexPath, new Error('Missing index.html'));
-        res.status(500).json({ error: 'Frontend not available' });
-      }
+      res.sendFile(indexPath);
     });
   } else {
-    log('⚠️ Build folder not found at ' + buildPath);
+    log('❌ Frontend files not found - serving API only');
     
-    // Fallback for API only mode
-    app.use((req, res) => {
-      if (req.path.startsWith('/api')) {
-        return res.status(404).json({ error: 'API endpoint not found' });
-      }
-      res.status(503).json({ error: 'Frontend build not available' });
+    // Minimal fallback
+    app.get('*', (req, res) => {
+      res.status(503).json({ error: 'Server temporarily unavailable' });
     });
   }
 
