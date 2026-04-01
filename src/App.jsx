@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Lenis from 'lenis';
 import { motion } from 'framer-motion';
 
-import Navbar from './components/Navbar';
+
 import Hero from './components/Hero';
 import About from './components/About';
 import Services from './components/Services';
@@ -14,7 +14,7 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Projects from './components/Projects';
 import ProjectDetails from './components/ProjectDetails';
-
+import Navbar from './components/Navbar';
 // Scroll Management Component
 const ScrollHandler = ({ aboutBoxRef, aboutSectionRef, aboutBgTextRef, teamGridRef, teamBgTextRef }) => {
   const { pathname } = useLocation();
@@ -149,7 +149,7 @@ const AppContent = () => {
   }, []);
 
   return (
-    <div className="text-text-primary min-h-screen bg-[#060606] selection:bg-orange-500 selection:text-white">
+    <div className="text-text-primary min-h-screen selection:bg-orange-500 selection:text-white relative">
       <ScrollHandler
         aboutBoxRef={aboutBoxRef}
         aboutSectionRef={aboutSectionRef}
@@ -166,7 +166,7 @@ const AppContent = () => {
         />
       )}
 
-      <main className="relative z-10 bg-black">
+      <main className="relative z-20 bg-black mb-[20vh] md:mb-[50vh]">
         <Routes>
           <Route path="/" element={
             <>

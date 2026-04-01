@@ -33,7 +33,7 @@ export default function Navbar() {
       }
     );
 
-    const sections = ["hero-section", "ourservice", "about-section", "projects", "tech-stack", "contact"];
+    const sections = ["hero-section", "ourservice", "ourservice-desktop", "about-section", "projects", "tech-stack", "contact"];
     sections.forEach((id) => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
@@ -46,16 +46,18 @@ export default function Navbar() {
   }, []);
 
 
-  /* Scroll to Services */
+  /* Scroll to Services — picks mobile or desktop section based on viewport */
   const goToService = () => {
+    const isMobile = window.innerWidth < 768;
+    const targetId = isMobile ? "ourservice" : "ourservice-desktop";
     if (window.location.pathname === "/") {
-      document.getElementById("ourservice")?.scrollIntoView({
+      document.getElementById(targetId)?.scrollIntoView({
         behavior: "smooth",
       });
     } else {
       navigate("/");
       setTimeout(() => {
-        document.getElementById("ourservice")?.scrollIntoView({
+        document.getElementById(targetId)?.scrollIntoView({
           behavior: "smooth",
         });
       }, 200);
@@ -161,7 +163,13 @@ export default function Navbar() {
 
 
   const isActive = (item) => {
-    if (item.type === "scroll") return activeSection === item.id && location.pathname === "/";
+    if (item.type === "scroll") {
+      // Services nav item matches either the mobile or desktop section
+      if (item.id === "ourservice") {
+        return (activeSection === "ourservice" || activeSection === "ourservice-desktop") && location.pathname === "/";
+      }
+      return activeSection === item.id && location.pathname === "/";
+    }
     return location.pathname === item.path;
   };
 

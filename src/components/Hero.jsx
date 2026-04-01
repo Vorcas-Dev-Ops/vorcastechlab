@@ -49,7 +49,10 @@ const Hero = () => {
             <svg width="15" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
           </button>
           <button 
-            onClick={() => document.getElementById("ourservice")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() => {
+              const id = window.innerWidth < 768 ? "ourservice" : "ourservice-desktop";
+              document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="px-8 py-3.5 rounded-full font-bold bg-[#fb6a09]/10 border border-orange-500/30 text-white transition-all duration-300 hover:bg-orange-600 hover:border-orange-600 hover:scale-105 flex items-center justify-center shadow-lg"
           >
             View services
