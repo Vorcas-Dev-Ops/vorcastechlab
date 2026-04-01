@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { 
-    Plus, Trash, LogOut, ChevronRight, 
-    Briefcase, LayoutGrid, FileText, 
+import {
+    Plus, Trash, LogOut, ChevronRight,
+    Briefcase, LayoutGrid, FileText,
     Image as ImageIcon, Globe, Calendar, User, AlignLeft
 } from 'lucide-react';
 
@@ -14,7 +14,7 @@ const ProjectsManager = ({ token }) => {
     const [editingId, setEditingId] = useState(null);
     const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({
-        projectId: '', title: '', category: '', client: '', 
+        projectId: '', title: '', category: '', client: '',
         duration: '', description: '', approach: '', siteUrl: '',
         showGalleryFirst: true
     });
@@ -28,12 +28,12 @@ const ProjectsManager = ({ token }) => {
         const newPreviews = [...detailImagesPreviews];
         const newFiles = [...detailImages];
         const newIndex = index + direction;
-        
+
         if (newIndex < 0 || newIndex >= newPreviews.length) return;
 
         // Swap previews
         [newPreviews[index], newPreviews[newIndex]] = [newPreviews[newIndex], newPreviews[index]];
-        
+
         // If we have files (newly selected), we might need to swap them too
         // Note: This is tricky because existing images don't have 'File' objects.
         // We'll handle this by converting all to Base64 on submit anyway.
@@ -46,9 +46,9 @@ const ProjectsManager = ({ token }) => {
 
     // --- Previews Logic ---
     useEffect(() => {
-        if (!mainImage) { 
+        if (!mainImage) {
             if (!isEditing) setMainImagePreview(null);
-            return; 
+            return;
         }
         const objectUrl = URL.createObjectURL(mainImage);
         setMainImagePreview(objectUrl);
@@ -73,10 +73,10 @@ const ProjectsManager = ({ token }) => {
     useEffect(() => { fetchProjects(); }, []);
 
     const resetForm = () => {
-        setFormData({ 
-            projectId: '', title: '', category: '', client: '', 
-            duration: '', description: '', approach: '', siteUrl: '', 
-            showGalleryFirst: true 
+        setFormData({
+            projectId: '', title: '', category: '', client: '',
+            duration: '', description: '', approach: '', siteUrl: '',
+            showGalleryFirst: true
         });
         setMainImage(null);
         setMainImage(null);
@@ -99,7 +99,7 @@ const ProjectsManager = ({ token }) => {
         setUploading(true);
         try {
             const data = new FormData();
-            
+
             // Convert any blobs (newly selected files) in detailImagesPreviews to Base64
             const finalGallery = await Promise.all(detailImagesPreviews.map(async (url) => {
                 if (url.startsWith('blob:')) {
@@ -116,10 +116,10 @@ const ProjectsManager = ({ token }) => {
                     data.append(key, formData[key]);
                 }
             });
-            
+
             if (mainImage) data.append('image', mainImage);
             data.append('images', JSON.stringify(finalGallery));
-            
+
             if (isEditing) {
                 await axios.put(`/api/projects/${editingId}`, data, {
                     headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'multipart/form-data' }
@@ -133,10 +133,10 @@ const ProjectsManager = ({ token }) => {
             }
             fetchProjects();
             resetForm();
-        } catch (error) { 
+        } catch (error) {
             const msg = error.response?.data?.message || error.message || 'Unknown error';
-            alert(`Save Error: ${msg}`); 
-            console.error(error); 
+            alert(`Save Error: ${msg}`);
+            console.error(error);
         } finally { setUploading(false); }
     };
 
@@ -172,7 +172,7 @@ const ProjectsManager = ({ token }) => {
             <aside className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/10">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                        {isEditing ? 'Edit Project' : 'New Project'} 
+                        {isEditing ? 'Edit Project' : 'New Project'}
                         {isEditing ? <ChevronRight size={18} className="text-orange-500" /> : <Plus size={18} className="text-orange-500" />}
                     </h3>
                     {isEditing && (
@@ -181,15 +181,15 @@ const ProjectsManager = ({ token }) => {
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Unique ID" value={formData.projectId} onChange={e => setFormData({...formData, projectId: e.target.value})} required disabled={isEditing} title={isEditing ? "Project ID cannot be changed" : ""} />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Unique ID" value={formData.projectId} onChange={e => setFormData({ ...formData, projectId: e.target.value })} required disabled={isEditing} title={isEditing ? "Project ID cannot be changed" : ""} />
 
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Title" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Category" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Client" value={formData.client} onChange={e => setFormData({...formData, client: e.target.value})} />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Title" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Category" value={formData.category} onChange={e => setFormData({ ...formData, category: e.target.value })} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Client" value={formData.client} onChange={e => setFormData({ ...formData, client: e.target.value })} />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Duration" value={formData.duration} onChange={e => setFormData({...formData, duration: e.target.value})} />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Live URL" value={formData.siteUrl} onChange={e => setFormData({...formData, siteUrl: e.target.value})} />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Duration" value={formData.duration} onChange={e => setFormData({ ...formData, duration: e.target.value })} />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Live URL" value={formData.siteUrl} onChange={e => setFormData({ ...formData, siteUrl: e.target.value })} />
                         <div className="flex flex-col gap-1">
                             <label className="text-[9px] uppercase font-bold text-white/30 ml-2">Banner</label>
                             <input type="file" className="text-[10px] file:bg-white/10 file:border-none file:text-white file:px-2 file:py-1 file:rounded" onChange={e => setMainImage(e.target.files[0])} required />
@@ -242,17 +242,17 @@ const ProjectsManager = ({ token }) => {
                             <h4 className="text-xs font-bold uppercase tracking-wider text-white/60 mb-1">Layout Priority</h4>
                             <p className="text-[10px] text-white/30">Choose if the image gallery appears before or after the project details.</p>
                         </div>
-                        <button 
-                            type="button" 
-                            onClick={() => setFormData({...formData, showGalleryFirst: !formData.showGalleryFirst})}
+                        <button
+                            type="button"
+                            onClick={() => setFormData({ ...formData, showGalleryFirst: !formData.showGalleryFirst })}
                             className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border ${formData.showGalleryFirst ? 'bg-orange-600/10 border-orange-500/30 text-orange-500' : 'bg-white/5 border-white/10 text-white/40'}`}
                         >
                             {formData.showGalleryFirst ? 'Gallery First' : 'Details First'}
                         </button>
                     </div>
 
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-20 text-xs" placeholder="Description" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required />
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-20 text-xs" placeholder="Our Approach" value={formData.approach} onChange={e => setFormData({...formData, approach: e.target.value})} required />
+                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-20 text-xs" placeholder="Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
+                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-20 text-xs" placeholder="Our Approach" value={formData.approach} onChange={e => setFormData({ ...formData, approach: e.target.value })} required />
                     <button type="submit" disabled={uploading} className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest text-xs ${uploading ? 'bg-orange-500/20' : 'bg-orange-600 hover:bg-orange-700'}`}>
                         {uploading ? 'Processing...' : isEditing ? 'Update Project' : 'Publish Project'}
                     </button>
@@ -302,12 +302,12 @@ const CareersManager = ({ token }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const payload = { 
-                ...formData, 
-                requirements: Array.isArray(formData.requirements) ? formData.requirements : formData.requirements.split(',').map(s=>s.trim()), 
-                responsibilities: Array.isArray(formData.responsibilities) ? formData.responsibilities : formData.responsibilities.split(',').map(s=>s.trim()) 
+            const payload = {
+                ...formData,
+                requirements: Array.isArray(formData.requirements) ? formData.requirements : formData.requirements.split(',').map(s => s.trim()),
+                responsibilities: Array.isArray(formData.responsibilities) ? formData.responsibilities : formData.responsibilities.split(',').map(s => s.trim())
             };
-            
+
             if (isEditing) {
                 await axios.put(`/api/careers/${editingId}`, payload, { headers: { Authorization: `Bearer ${token}` } });
                 alert('Job Updated!');
@@ -349,7 +349,7 @@ const CareersManager = ({ token }) => {
             <aside className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/10">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                        {isEditing ? 'Edit Offering' : 'Post Offering'} 
+                        {isEditing ? 'Edit Offering' : 'Post Offering'}
                         {isEditing ? <ChevronRight size={18} className="text-orange-500" /> : <Briefcase size={18} className="text-orange-500" />}
                     </h3>
                     {isEditing && (
@@ -358,19 +358,19 @@ const CareersManager = ({ token }) => {
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Job Title" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Dept" value={formData.department} onChange={e => setFormData({...formData, department: e.target.value})} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Location" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Type (Full-time)" value={formData.type} onChange={e => setFormData({...formData, type: e.target.value})} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Job Title" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Dept" value={formData.department} onChange={e => setFormData({ ...formData, department: e.target.value })} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Location" value={formData.location} onChange={e => setFormData({ ...formData, location: e.target.value })} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Type (Full-time)" value={formData.type} onChange={e => setFormData({ ...formData, type: e.target.value })} required />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Experience" value={formData.experience} onChange={e => setFormData({...formData, experience: e.target.value})} />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Salary Range" value={formData.salary} onChange={e => setFormData({...formData, salary: e.target.value})} />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Experience" value={formData.experience} onChange={e => setFormData({ ...formData, experience: e.target.value })} />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Salary Range" value={formData.salary} onChange={e => setFormData({ ...formData, salary: e.target.value })} />
                     </div>
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-16 text-xs" placeholder="Brief Description" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} required />
+                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-16 text-xs" placeholder="Brief Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                     <div className="grid grid-cols-2 gap-4">
-                        <textarea className="bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Requirements (comma separated)" value={formData.requirements} onChange={e => setFormData({...formData, requirements: e.target.value})} required />
-                        <textarea className="bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Responsibilities (comma separated)" value={formData.responsibilities} onChange={e => setFormData({...formData, responsibilities: e.target.value})} required />
+                        <textarea className="bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Requirements (comma separated)" value={formData.requirements} onChange={e => setFormData({ ...formData, requirements: e.target.value })} required />
+                        <textarea className="bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Responsibilities (comma separated)" value={formData.responsibilities} onChange={e => setFormData({ ...formData, responsibilities: e.target.value })} required />
                     </div>
                     <button type="submit" className="w-full py-4 bg-orange-600 rounded-xl font-bold uppercase tracking-widest text-xs">
                         {isEditing ? 'Update Career Opportunity' : 'Publish Career Opportunity'}
@@ -424,7 +424,7 @@ const BlogsManager = ({ token }) => {
             const data = new FormData();
             Object.keys(formData).forEach(key => data.append(key, formData[key]));
             if (image) data.append('image', image);
-            
+
             if (isEditing) {
                 await axios.put(`/api/blogs/${editingId}`, data, { headers: { Authorization: `Bearer ${token}` } });
                 alert('Blog Updated!');
@@ -463,7 +463,7 @@ const BlogsManager = ({ token }) => {
             <aside className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/10">
                 <div className="flex justify-between items-center mb-6">
                     <h3 className="text-lg font-bold flex items-center gap-2">
-                        {isEditing ? 'Edit Insight' : 'Daily Insight'} 
+                        {isEditing ? 'Edit Insight' : 'Daily Insight'}
                         {isEditing ? <ChevronRight size={18} className="text-orange-500" /> : <FileText size={18} className="text-orange-500" />}
                     </h3>
                     {isEditing && (
@@ -472,12 +472,12 @@ const BlogsManager = ({ token }) => {
                 </div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Blog Title" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Slug (no-spaces)" value={formData.slug} onChange={e => setFormData({...formData, slug: e.target.value})} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Blog Title" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
+                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Slug (no-spaces)" value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value })} required />
                         <input type="file" className="bg-white/5 border border-white/10 p-1.5 rounded-xl text-[10px] file:bg-white/10 file:text-white" onChange={e => setImage(e.target.files[0])} />
                     </div>
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-16 text-xs" placeholder="Short Excerpt" value={formData.excerpt} onChange={e => setFormData({...formData, excerpt: e.target.value})} required />
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-48 text-xs font-mono" placeholder="Full Content (Markdown or Text)" value={formData.content} onChange={e => setFormData({...formData, content: e.target.value})} required />
+                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-16 text-xs" placeholder="Short Excerpt" value={formData.excerpt} onChange={e => setFormData({ ...formData, excerpt: e.target.value })} required />
+                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-48 text-xs font-mono" placeholder="Full Content (Markdown or Text)" value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} required />
                     <button type="submit" disabled={uploading} className="w-full py-4 bg-orange-600 rounded-xl font-bold uppercase tracking-widest text-xs">
                         {uploading ? 'Processing...' : isEditing ? 'Update Post' : 'Push to Daily Feed'}
                     </button>
@@ -524,14 +524,14 @@ const AdminDashboard = () => {
                 <div className="max-w-[1400px] mx-auto px-6 h-20 flex justify-between items-center">
                     <div className="flex items-center gap-10">
                         <div className="group cursor-pointer">
-                            <h2 className="text-xl font-black bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent tracking-tighter">VORCAS CMD</h2>
+                            <h2 className="text-xl font-black bg-gradient-to-r from-orange-500 to-yellow-500 bg-clip-text text-transparent tracking-tighter">VORCAS </h2>
                             <p className="text-[9px] text-white/20 tracking-[2px] uppercase -mt-0.5 font-bold group-hover:text-orange-500/50 transition-colors">Admin Center</p>
                         </div>
 
                         {/* Horizontal Tabs */}
                         <nav className="flex items-center gap-1 bg-white/[0.03] p-1 rounded-2xl border border-white/5">
                             {navItems.map(tab => (
-                                <button 
+                                <button
                                     key={tab.id}
                                     onClick={() => setCurrentTab(tab.id)}
                                     className={`flex items-center gap-2.5 px-6 py-2.5 rounded-xl transition-all font-bold text-xs uppercase tracking-widest ${currentTab === tab.id ? 'bg-orange-600 text-white shadow-xl shadow-orange-600/20' : 'text-white/30 hover:bg-white/5 hover:text-white'}`}
