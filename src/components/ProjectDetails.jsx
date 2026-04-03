@@ -56,7 +56,7 @@ export default function ProjectDetails() {
 
         // Fetch Dynamic
         try {
-            const res = await fetch(`http://localhost:5000/api/projects/${id}`);
+            const res = await fetch(`/api/projects/${id}`);
             if (res.ok) {
                 const json = await res.json();
                 setData(json);
