@@ -75,8 +75,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     --cube-w: 320px;
-    --cube-h: 140px;
-    --cube-z: 70px;
+    --cube-h: 320px;
+    --cube-z: 160px;
 
     @media (min-width: 768px) {
       --cube-w: 900px;
@@ -89,7 +89,7 @@
 /* Custom Components */
 @layer components {
   .glass-panel {
-    @apply bg-glass-bg border border-glass-border backdrop-blur-md rounded-[24px] p-6 md:p-10 transition-all duration-500 hover:-translate-y-1 hover:border-accent/30 hover:shadow-[0_10px_30px_rgba(251,106,9,0.1)];
+    @apply bg-glass-bg border border-glass-border backdrop-blur-md rounded-[24px] p-6 md:p-10 transition-all duration-500 hover:-translate-y-1 hover:border-accent/30 hover:shadow-[0_10px_30px_rgba(251_106_9_/_0.1)];
   }
 
   .service-card-premium {
@@ -102,7 +102,7 @@
   }
 
   .primary-btn {
-    @apply inline-block px-8 py-4 rounded-full font-medium bg-white text-bg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] cursor-pointer;
+    @apply inline-block px-8 py-4 rounded-full font-medium bg-white text-bg transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(255_255_255_/_0.2)] cursor-pointer;
   }
 
   .secondary-btn {
@@ -132,7 +132,7 @@
 
   /* Mobile Menu Overlay */
   .mobile-menu-overlay {
-    @apply fixed inset-0 bg-bg/98 z-[90] flex flex-col items-center justify-center gap-8 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none opacity-0 translate-y-[-20px];
+    @apply fixed inset-0 bg-bg/98 z-[90] flex flex-col items-center justify-center gap-8 transition-all duration-700 ease-[cubic-bezier(0.16,_1,_0.3,_1)] pointer-events-none opacity-0 translate-y-[-20px];
   }
 
   .mobile-menu-overlay.active {
@@ -243,7 +243,7 @@
   .reveal-left,
   .reveal-right,
   .reveal-opacity {
-    @apply opacity-0 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)];
+    @apply opacity-0 transition-all duration-1000 ease-[cubic-bezier(0.16,_1,_0.3,_1)];
   }
 
   .reveal-up {

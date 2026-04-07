@@ -79,7 +79,7 @@ const TechCard = ({ t }) => (
       }}
     />
     
-    <div className="text-4xl md:text-5xl relative z-10 transition-all duration-500 group-hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.3)] shadow-current" style={{ color: t.brandColor }}>
+    <div className="text-4xl md:text-5xl relative z-10 transition-all duration-500 group-hover:drop-shadow-[0_0_15px_rgba(255_255_255_/_0.3)] shadow-current" style={{ color: t.brandColor }}>
       {t.icon}
     </div>
     

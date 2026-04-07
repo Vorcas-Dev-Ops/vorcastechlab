@@ -118,7 +118,7 @@ const Contact = () => {
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
 
                 {status.success ? (
-                  <motion.div 
+                  <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     className="relative z-10 flex flex-col items-center justify-center py-12 text-center space-y-4"
@@ -128,7 +128,7 @@ const Contact = () => {
                     </div>
                     <h3 className="text-2xl font-bold text-white">Message Sent!</h3>
                     <p className="text-white/60 max-w-xs">{status.message}</p>
-                    <button 
+                    <button
                       onClick={() => setStatus({ ...status, success: false })}
                       className="mt-6 text-orange-500 text-sm font-bold uppercase tracking-widest hover:text-white transition-colors"
                     >

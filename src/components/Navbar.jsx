@@ -184,7 +184,7 @@ export default function Navbar() {
       >
         <div
           className={`flex items-center justify-between transition-all duration-300 w-full ${isScrolled
-            ? "md:w-[90%] lg:max-w-[1100px] mx-auto bg-black/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)] md:rounded-full py-2 md:py-1.5 px-6 md:px-6 lg:px-8"
+            ? "md:w-[90%] lg:max-w-[1100px] mx-auto bg-black/60 backdrop-blur-xl border border-white/10 shadow-[0_8px_32px_rgba(0_0_0_/_0.5)] md:rounded-full py-2 md:py-1.5 px-6 md:px-6 lg:px-8"
             : "bg-transparent py-4 px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto border border-transparent"
             }`}
         >
@@ -199,7 +199,7 @@ export default function Navbar() {
               <li
                 key={item.id}
                 onClick={item.type === "scroll" ? item.fn : () => navigate(item.path)}
-                className={`relative px-3 py-1.5 rounded-full cursor-pointer transition-all duration-300 ${isActive(item) ? "bg-white/10 text-orange-500 shadow-[0_0_15px_rgba(249,115,22,0.1)] scale-105" : "text-white/60 hover:text-white hover:bg-white/5"}`}
+                className={`relative px-3 py-1.5 rounded-full cursor-pointer transition-all duration-300 ${isActive(item) ? "bg-white/10 text-orange-500 shadow-[0_0_15px_rgba(249_115_22_/_0.1)] scale-105" : "text-white/60 hover:text-white hover:bg-white/5"}`}
               >
                 {item.label}
                 {isActive(item) && (
@@ -216,10 +216,10 @@ export default function Navbar() {
             onClick={goContact}
             className="relative hidden md:inline-block px-5 py-2 text-[14px] font-bold border border-white/20 rounded-full text-white overflow-hidden z-10 transition-all duration-300 ease-in-out
               before:content-[''] before:absolute before:left-1/2 before:top-full before:w-[140%] before:h-[180%] before:bg-orange-500 before:rounded-full before:-translate-x-1/2 before:scale-x-[1.25] before:scale-y-100 before:z-[-1]
-              before:transition-all before:duration-500 before:delay-100 before:ease-[cubic-bezier(0.55,0,0.1,1)]
+              before:transition-all before:duration-500 before:delay-100 before:ease-[cubic-bezier(0.55,_0,_0.1,_1)]
               
               after:content-[''] after:absolute after:left-[55%] after:top-[180%] after:w-[160%] after:h-[190%] after:bg-orange-600 after:rounded-full after:-translate-x-1/2 after:scale-x-[1.45] after:scale-y-100 after:z-[-1]
-              after:transition-all after:duration-500 after:delay-100 after:ease-[cubic-bezier(0.55,0,0.1,1)]
+              after:transition-all after:duration-500 after:delay-100 after:ease-[cubic-bezier(0.55,_0,_0.1,_1)]
               
               hover:text-white hover:border-orange-500
               hover:before:top-[-35%] hover:before:scale-x-[0.8] hover:before:scale-y-[1.3]

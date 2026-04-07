@@ -96,7 +96,7 @@ const ServiceCard = ({ service }) => (
           <ul className="grid grid-cols-1 gap-y-2">
             {service.services.slice(0, 4).map((s, i) => (
               <li key={i} className="flex items-center gap-2 text-[11px] text-white/90 font-semibold">
-                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0 shadow-[0_0_8px_rgba(251,106,9,0.5)]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0 shadow-[0_0_8px_rgba(251_106_9_/_0.5)]" />
                 {s}
               </li>
             ))}
@@ -246,7 +246,7 @@ const Services = () => {
         <div className="sticky top-0 h-screen flex items-center overflow-hidden">
 
           {/* Left Column: Fixed Content */}
-          <div className="absolute top-0 left-0 w-full md:w-[32%] h-full bg-black z-30 flex flex-col justify-center px-6 md:px-12 lg:px-20 md:shadow-[60px_0_90px_-20px_rgba(0,0,0,1)]">
+          <div className="absolute top-0 left-0 w-full md:w-[32%] h-full bg-black z-30 flex flex-col justify-center px-6 md:px-12 lg:px-20 md:shadow-[60px_0_90px_-20px_rgba(0_0_0_/_1)]">
             <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-white tracking-tighter mb-8 max-w-sm leading-tight">
               <span className="text-orange-500">O</span>ur <span className="text-orange-500">S</span>ervices
             </h2>
@@ -303,7 +303,7 @@ const Services = () => {
                         <ul className="grid grid-cols-1 gap-y-2.5">
                           {service.services.slice(0, 4).map((s, i) => (
                             <li key={i} className="flex items-center gap-2 text-[11px] lg:text-[15px] text-white/90 font-semibold whitespace-nowrap">
-                              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0 shadow-[0_0_8px_rgba(251,106,9,0.5)]" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-orange-500 flex-shrink-0 shadow-[0_0_8px_rgba(251_106_9_/_0.5)]" />
                               {s}
                             </li>
                           ))}

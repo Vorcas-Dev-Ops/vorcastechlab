@@ -166,7 +166,7 @@ const AppContent = () => {
         />
       )}
 
-      <main className="relative z-20 bg-black mb-[20vh] md:mb-[50vh]">
+      <main className="relative z-20 bg-black mb-[20vh] md:mb-[50vh]" style={{ overflowX: 'clip' }}>
         <Routes>
           <Route path="/" element={
             <>
