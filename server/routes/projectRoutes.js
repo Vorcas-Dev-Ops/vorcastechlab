@@ -40,7 +40,7 @@ router.post('/', protect, admin, upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'detailImages', maxCount: 10 }
 ]), asyncHandler(async (req, res) => {
-    const { projectId, title, category, client, duration, description, approach, siteUrl, colSpan, showGalleryFirst } = req.body;
+    const { projectId, title, category, client, duration, description, approach, problem, solution, sectionsConfig, siteUrl, colSpan, showGalleryFirst } = req.body;
     
     const projectExists = await Project.findOne({ where: { projectId } });
     if (projectExists) {
@@ -73,6 +73,9 @@ router.post('/', protect, admin, upload.fields([
         image: imageUrl,
         description,
         approach,
+        problem,
+        solution,
+        sectionsConfig: sectionsConfig ? (typeof sectionsConfig === 'string' ? JSON.parse(sectionsConfig) : sectionsConfig) : undefined,
         siteUrl,
         images: detailImageUrls,
         colSpan,
@@ -89,7 +92,7 @@ router.put('/:id', protect, admin, upload.fields([
     { name: 'image', maxCount: 1 },
     { name: 'detailImages', maxCount: 10 }
 ]), asyncHandler(async (req, res) => {
-    const { title, category, client, duration, description, approach, siteUrl, colSpan, showGalleryFirst } = req.body;
+    const { title, category, client, duration, description, approach, problem, solution, sectionsConfig, siteUrl, colSpan, showGalleryFirst } = req.body;
     
     // Find project by the unique custom projectId
     const project = await Project.findOne({ where: { projectId: req.params.id } });
@@ -101,6 +104,11 @@ router.put('/:id', protect, admin, upload.fields([
         project.duration = duration || project.duration;
         project.description = description || project.description;
         project.approach = approach || project.approach;
+        project.problem = problem !== undefined ? problem : project.problem;
+        project.solution = solution !== undefined ? solution : project.solution;
+        if (sectionsConfig) {
+            project.sectionsConfig = typeof sectionsConfig === 'string' ? JSON.parse(sectionsConfig) : sectionsConfig;
+        }
         project.siteUrl = siteUrl || project.siteUrl;
         project.colSpan = colSpan || project.colSpan;
         if (showGalleryFirst !== undefined) {

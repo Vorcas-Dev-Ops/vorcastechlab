@@ -15,7 +15,15 @@ const ProjectsManager = ({ token }) => {
     const [uploading, setUploading] = useState(false);
     const [formData, setFormData] = useState({
         projectId: '', title: '', category: '', client: '',
-        duration: '', description: '', approach: '', siteUrl: '',
+        duration: '', description: '', approach: '',
+        problem: '', solution: '',
+        sectionsConfig: [
+            { id: 'description', enabled: true, label: 'Description' },
+            { id: 'problem', enabled: false, label: 'Problem Statement' },
+            { id: 'solution', enabled: false, label: 'The Solution' },
+            { id: 'approach', enabled: true, label: 'Our Approach' }
+        ],
+        siteUrl: '',
         showGalleryFirst: true
     });
     const [mainImage, setMainImage] = useState(null);
@@ -42,6 +50,20 @@ const ProjectsManager = ({ token }) => {
 
     const removeImage = (index) => {
         setDetailImagesPreviews(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const moveSection = (index, direction) => {
+        const newConfig = [...formData.sectionsConfig];
+        const newIndex = index + direction;
+        if (newIndex < 0 || newIndex >= newConfig.length) return;
+        [newConfig[index], newConfig[newIndex]] = [newConfig[newIndex], newConfig[index]];
+        setFormData({ ...formData, sectionsConfig: newConfig });
+    };
+
+    const toggleSection = (index) => {
+        const newConfig = [...formData.sectionsConfig];
+        newConfig[index].enabled = !newConfig[index].enabled;
+        setFormData({ ...formData, sectionsConfig: newConfig });
     };
 
     // --- Previews Logic ---
@@ -75,7 +97,15 @@ const ProjectsManager = ({ token }) => {
     const resetForm = () => {
         setFormData({
             projectId: '', title: '', category: '', client: '',
-            duration: '', description: '', approach: '', siteUrl: '',
+            duration: '', description: '', approach: '',
+            problem: '', solution: '',
+            sectionsConfig: [
+                { id: 'description', enabled: true, label: 'Description' },
+                { id: 'problem', enabled: false, label: 'Problem Statement' },
+                { id: 'solution', enabled: false, label: 'The Solution' },
+                { id: 'approach', enabled: true, label: 'Our Approach' }
+            ],
+            siteUrl: '',
             showGalleryFirst: true
         });
         setMainImage(null);
@@ -112,6 +142,8 @@ const ProjectsManager = ({ token }) => {
             Object.keys(formData).forEach(key => {
                 if (key === 'showGalleryFirst') {
                     data.append(key, formData[key] ? 'true' : 'false');
+                } else if (key === 'sectionsConfig') {
+                    data.append(key, JSON.stringify(formData[key]));
                 } else {
                     data.append(key, formData[key]);
                 }
@@ -151,6 +183,14 @@ const ProjectsManager = ({ token }) => {
             duration: project.duration || '',
             description: project.description,
             approach: project.approach,
+            problem: project.problem || '',
+            solution: project.solution || '',
+            sectionsConfig: project.sectionsConfig || [
+                { id: 'description', enabled: true, label: 'Description' },
+                { id: 'problem', enabled: false, label: 'Problem Statement' },
+                { id: 'solution', enabled: false, label: 'The Solution' },
+                { id: 'approach', enabled: true, label: 'Our Approach' }
+            ],
             siteUrl: project.siteUrl || '',
             showGalleryFirst: project.showGalleryFirst !== undefined ? project.showGalleryFirst : true
         });
@@ -251,8 +291,47 @@ const ProjectsManager = ({ token }) => {
                         </button>
                     </div>
 
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-20 text-xs" placeholder="Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-20 text-xs" placeholder="Our Approach" value={formData.approach} onChange={e => setFormData({ ...formData, approach: e.target.value })} required />
+                    {/* Section Visibility & Reordering */}
+                    <div className="space-y-4">
+                        <label className="text-xs font-bold uppercase tracking-wider text-white/60">Section Management (Order & Visibility)</label>
+                        <div className="space-y-2">
+                            {formData.sectionsConfig.map((section, idx) => (
+                                <div key={section.id} className="flex items-center gap-4 p-3 bg-white/5 border border-white/10 rounded-xl">
+                                    <div className="flex gap-1">
+                                        <button type="button" onClick={() => moveSection(idx, -1)} disabled={idx === 0} className="p-1.5 bg-white/10 hover:bg-orange-500 rounded disabled:opacity-20"><ChevronRight size={14} className="rotate-180" /></button>
+                                        <button type="button" onClick={() => moveSection(idx, 1)} disabled={idx === formData.sectionsConfig.length - 1} className="p-1.5 bg-white/10 hover:bg-orange-500 rounded disabled:opacity-20"><ChevronRight size={14} /></button>
+                                    </div>
+                                    <div className="flex-1 text-xs font-bold">{section.label}</div>
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleSection(idx)}
+                                        className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border ${section.enabled ? 'bg-orange-600/20 border-orange-500/40 text-orange-500' : 'bg-white/5 border-white/10 text-white/20'}`}
+                                    >
+                                        {section.enabled ? 'Enabled' : 'Disabled'}
+                                    </button>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="space-y-4">
+                        {formData.sectionsConfig.map((section) => {
+                            if (section.id === 'description') {
+                                return <textarea key="desc" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
+                            }
+                            if (section.id === 'problem') {
+                                return <textarea key="prob" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="The Problem" value={formData.problem} onChange={e => setFormData({ ...formData, problem: e.target.value })} />
+                            }
+                            if (section.id === 'solution') {
+                                return <textarea key="sol" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="The Solution" value={formData.solution} onChange={e => setFormData({ ...formData, solution: e.target.value })} />
+                            }
+                            if (section.id === 'approach') {
+                                return <textarea key="appr" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Our Approach" value={formData.approach} onChange={e => setFormData({ ...formData, approach: e.target.value })} required />
+                            }
+                            return null;
+                        })}
+                    </div>
+
                     <button type="submit" disabled={uploading} className={`w-full py-4 rounded-xl font-bold uppercase tracking-widest text-xs ${uploading ? 'bg-orange-500/20' : 'bg-orange-600 hover:bg-orange-700'}`}>
                         {uploading ? 'Processing...' : isEditing ? 'Update Project' : 'Publish Project'}
                     </button>

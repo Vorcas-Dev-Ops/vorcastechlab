@@ -171,9 +171,41 @@ export default function ProjectDetails() {
 
               {/* Right Content Column */}
               <div className="flex-1" data-aos="fade-up" data-aos-delay="400">
-                <p className="text-lg md:text-xl text-white/80 font-medium leading-relaxed mb-12">{data.description}</p>
-                <h3 className="text-3xl font-bold mb-6">My Approach</h3>
-                <p className="text-white/60 text-lg leading-relaxed mb-8">{data.approach}</p>
+                {(data.sectionsConfig || [
+                  { id: 'description', enabled: true, label: 'Description' },
+                  { id: 'approach', enabled: true, label: 'My Approach' }
+                ]).map((section) => {
+                  if (!section.enabled) return null;
+
+                  if (section.id === 'description' && data.description) {
+                    return <p key="desc" className="text-lg md:text-xl text-white/80 font-medium leading-relaxed mb-12">{data.description}</p>;
+                  }
+                  if (section.id === 'problem' && data.problem) {
+                    return (
+                      <div key="prob" className="mb-12">
+                        <h3 className="text-3xl font-bold mb-6">The Problem</h3>
+                        <p className="text-white/60 text-lg leading-relaxed">{data.problem}</p>
+                      </div>
+                    );
+                  }
+                  if (section.id === 'solution' && data.solution) {
+                    return (
+                      <div key="sol" className="mb-12">
+                        <h3 className="text-3xl font-bold mb-6">The Solution</h3>
+                        <p className="text-white/60 text-lg leading-relaxed">{data.solution}</p>
+                      </div>
+                    );
+                  }
+                  if (section.id === 'approach' && data.approach) {
+                    return (
+                      <div key="appr" className="mb-12">
+                        <h3 className="text-3xl font-bold mb-6">My Approach</h3>
+                        <p className="text-white/60 text-lg leading-relaxed">{data.approach}</p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
               </div>
             </div>
           );

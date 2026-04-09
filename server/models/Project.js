@@ -39,6 +39,23 @@ const Project = sequelize.define('Project', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    problem: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    solution: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    sectionsConfig: {
+        type: DataTypes.JSON,
+        defaultValue: [
+            { id: 'description', enabled: true },
+            { id: 'problem', enabled: false },
+            { id: 'solution', enabled: false },
+            { id: 'approach', enabled: true }
+        ]
+    },
     images: {
         type: DataTypes.ARRAY(DataTypes.TEXT),
         defaultValue: []
