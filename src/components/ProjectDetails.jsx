@@ -173,7 +173,7 @@ export default function ProjectDetails() {
               <div className="flex-1" data-aos="fade-up" data-aos-delay="400">
                 {(data.sectionsConfig || [
                   { id: 'description', enabled: true, label: 'Description' },
-                  { id: 'approach', enabled: true, label: 'My Approach' }
+                  { id: 'approach', enabled: true, label: 'Approach' }
                 ]).map((section) => {
                   if (!section.enabled) return null;
 
