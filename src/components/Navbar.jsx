@@ -179,7 +179,7 @@ export default function Navbar() {
 
     <>
       <nav
-        className={`fixed left-0 w-full z-50 transition-all duration-300 ${isScrolled ? "md:top-5 top-0" : "top-0"
+        className={`fixed left-0 w-full z-50 transition-all duration-300 ${isScrolled ? "md:top-2 top-0" : "top-0"
           }`}
       >
         <div
