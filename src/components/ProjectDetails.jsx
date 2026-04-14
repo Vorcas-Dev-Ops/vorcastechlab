@@ -41,6 +41,7 @@ export default function ProjectDetails() {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [similarProjects, setSimilarProjects] = useState([]);
 
   useEffect(() => {
     AOS.init({ once: true, duration: 800, easing: 'ease-out-cubic' });
@@ -72,6 +73,26 @@ export default function ProjectDetails() {
 
     getProject();
   }, [id]);
+
+  useEffect(() => {
+    if (!data) return;
+
+    const fetchSimilar = async () => {
+      try {
+        const res = await fetch('/api/projects');
+        if (!res.ok) return;
+        const allProjects = await res.json();
+        const similar = allProjects
+          .filter((project) => project.projectId !== id && project.category === data.category)
+          .slice(0, 3);
+        setSimilarProjects(similar);
+      } catch (err) {
+        console.error('Error fetching similar projects:', err);
+      }
+    };
+
+    fetchSimilar();
+  }, [data, id]);
 
   if (loading) return (
     <div className="min-h-screen bg-black flex items-center justify-center">
@@ -105,8 +126,10 @@ export default function ProjectDetails() {
         </div>
         {/* Dynamic Content Ordering */}
         {(() => {
+          const showGalleryFirst = data.showGalleryFirst !== false;
+
           const GallerySection = (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20" key="gallery">
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 ${showGalleryFirst ? 'md:order-1' : 'md:order-2'}`} key="gallery">
               {data.images && Array.isArray(data.images) && data.images.map((img, idx) => (
                 <div
                   key={idx}
@@ -121,7 +144,7 @@ export default function ProjectDetails() {
           );
 
           const DetailsSection = (
-            <div className="flex flex-col md:flex-row gap-16 lg:gap-32 mb-20" key="details">
+            <div className={`flex flex-col md:flex-row gap-16 lg:gap-32 mb-20 ${showGalleryFirst ? 'md:order-2' : 'md:order-1'}`} key="details">
               {/* Left Metadata Column */}
               <div className="md:w-[250px] shrink-0" data-aos="fade-right" data-aos-delay="300">
                 <div className="space-y-4 text-sm mb-10">
@@ -217,10 +240,38 @@ export default function ProjectDetails() {
             </div>
           );
 
-          return data.showGalleryFirst !== false 
-            ? [GallerySection, DetailsSection] 
-            : [DetailsSection, GallerySection];
+          return (
+            <div className="flex flex-col gap-16">
+              {DetailsSection}
+              {GallerySection}
+            </div>
+          );
         })()}
+
+        <div className="border-t border-white/10 pt-12 mt-8">
+          <h2 className="text-3xl font-bold mb-6">Similar Projects</h2>
+          {similarProjects.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {similarProjects.map((project) => (
+                <a
+                  key={project.projectId}
+                  href={`/projects/${project.projectId}`}
+                  className="group block overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 p-5 transition-all hover:-translate-y-1 hover:border-orange-400"
+                >
+                  <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-white/5 mb-4">
+                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="space-y-2">
+                    <span className="text-xs uppercase tracking-[0.3em] text-white/40">{project.category}</span>
+                    <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-orange-500">{project.title}</h3>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <p className="text-white/70">No similar projects available yet, check back later.</p>
+          )}
+        </div>
       </div>
     </div>
   );
