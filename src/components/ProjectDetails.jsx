@@ -81,6 +81,13 @@ export default function ProjectDetails() {
 
   if (!data) return null;
 
+  const rawSiteUrl = data.siteUrl?.trim();
+  const normalizedSiteUrl = rawSiteUrl
+    ? /^https?:\/\//i.test(rawSiteUrl)
+      ? rawSiteUrl
+      : `https://${rawSiteUrl}`
+    : '#';
+
   return (
     <div className="min-h-screen bg-black text-white pt-24 pb-12 px-6 md:px-12 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
@@ -89,12 +96,12 @@ export default function ProjectDetails() {
         <div className="flex flex-col items-center justify-center text-center relative mb-16">
           <button
             onClick={() => navigate('/projects')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors bg-white/5 py-2 px-4 rounded-full border border-white/10"
+            className="mb-4 w-full max-w-[260px] self-center md:self-auto md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors bg-white/5 py-2 px-4 rounded-full border border-white/10"
             data-aos="fade-right"
           >
             <ArrowLeft size={16} /> Back to Projects
           </button>
-          <h1 className="text-4xl md:text-5xl font-bold" data-aos="fade-down">{data.title}</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold break-words" data-aos="fade-down">{data.title}</h1>
         </div>
         {/* Dynamic Content Ordering */}
         {(() => {
@@ -134,7 +141,7 @@ export default function ProjectDetails() {
 
                 <div className="flex flex-col gap-3">
                   <a 
-                    href={data.siteUrl || '#'} 
+                    href={normalizedSiteUrl} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="group relative flex justify-center items-center text-zinc-600 text-sm font-bold w-full"

@@ -84,7 +84,6 @@ const ProjectsManager = ({ token }) => {
         return () => objectUrls.forEach(url => URL.revokeObjectURL(url));
     }, [detailImages]);
 
-
     const fetchProjects = async () => {
         try {
             const { data } = await axios.get('/api/projects');

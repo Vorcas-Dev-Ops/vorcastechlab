@@ -1,40 +1,54 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 export default function Projects() {
   const navigate = useNavigate();
-  const [cursorPos, setCursorPos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const cursorRef = useRef(null);
+  const rafRef = useRef(null);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const response = await fetch('/api/projects');
         const dynamicProjects = await response.json();
-        
+
         if (Array.isArray(dynamicProjects)) {
-            const mapped = dynamicProjects.map(p => ({
-                ...p,
-                id: p.projectId // Mapping backend projectId to frontend id
-            }));
-            setProjects(mapped);
+          const mapped = dynamicProjects.map(p => ({
+            ...p,
+            id: p.projectId // Mapping backend projectId to frontend id
+          }));
+          setProjects(mapped);
         }
       } catch (error) {
-        console.error("Error fetching projects from backend:", error);
+        console.error('Error fetching projects from backend:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProjects();
 
     const handleMouseMove = (e) => {
-      setCursorPos({ x: e.clientX, y: e.clientY });
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+      rafRef.current = requestAnimationFrame(() => {
+        if (cursorRef.current) {
+          cursorRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0) translate(-50%, -50%)`;
+        }
+      });
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
     };
   }, []);
 
@@ -43,10 +57,11 @@ export default function Projects() {
 
       {/* Custom Cursor Overlay */}
       <div
+        ref={cursorRef}
         className={`fixed top-0 left-0 pointer-events-none z-[9999] transition-opacity duration-300 ease-in-out ${isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         style={{
-          transform: `translate3d(${cursorPos.x}px, ${cursorPos.y}px, 0) translate(-50%, -50%)`,
+          transform: 'translate3d(0, 0, 0) translate(-50%, -50%)',
         }}
       >
         <div className="bg-white text-black pl-5 pr-2 py-2 rounded-full flex items-center gap-3 shadow-xl backdrop-blur-md">
@@ -65,29 +80,38 @@ export default function Projects() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 lg:gap-10">
-          {projects.map((project) => (
-            <div
-              key={project.id}
-              className="group cursor-none flex flex-col mx-auto w-full max-w-[450px] sm:max-w-none"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              onClick={() => navigate(`/projects/${project.id}`)}
-            >
-              <div className="relative w-full aspect-video rounded-2xl md:rounded-3xl overflow-hidden mb-4 bg-white/5 shadow-lg">
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+        {loading ? (
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+            {[1, 2, 3, 4, 5, 6].map((placeholder) => (
+              <div key={placeholder} className="animate-pulse rounded-3xl bg-white/[0.03] p-6 h-80" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+            {projects.map((project) => (
+              <div
+                key={project.id}
+                className="group cursor-none flex flex-col mx-auto w-full max-w-[450px] sm:max-w-none"
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={() => navigate(`/projects/${project.id}`)}
+              >
+                <div className="relative w-full aspect-video rounded-2xl md:rounded-3xl overflow-hidden mb-4 bg-white/5 shadow-lg">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+                <div className="px-2">
+                  <span className="block text-white/50 text-xs mb-1.5">{project.category}</span>
+                  <h3 className="text-lg md:text-xl font-bold transition-colors group-hover:text-orange-500">{project.title}</h3>
+                </div>
               </div>
-              <div className="px-2">
-                <span className="block text-white/50 text-xs mb-1.5">{project.category}</span>
-                <h3 className="text-lg md:text-xl font-bold transition-colors group-hover:text-orange-500">{project.title}</h3>
-              </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -16,7 +16,9 @@ const convertToBase64 = (file) => {
 // @route   GET /api/projects
 // @access  Public
 router.get('/', asyncHandler(async (req, res) => {
-    const projects = await Project.findAll();
+    const projects = await Project.findAll({
+        attributes: ['projectId', 'title', 'category', 'image']
+    });
     res.json(projects);
 }));
 
