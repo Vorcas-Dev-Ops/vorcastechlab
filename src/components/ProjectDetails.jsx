@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -39,15 +39,19 @@ const projectDetails = {
 export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const initialProject = location.state?.project;
+  const [data, setData] = useState(initialProject || null);
+  const [loading, setLoading] = useState(!initialProject);
   const [similarProjects, setSimilarProjects] = useState([]);
 
   useEffect(() => {
     AOS.init({ once: true, duration: 800, easing: 'ease-out-cubic' });
 
     const getProject = async () => {
-        setLoading(true);
+        if (!initialProject) {
+            setLoading(true);
+        }
         // Check Static first
         if (projectDetails[id]) {
             setData(projectDetails[id]);
@@ -67,7 +71,9 @@ export default function ProjectDetails() {
         } catch (err) {
             setData(projectDetails.default);
         } finally {
-            setLoading(false);
+            if (!initialProject) {
+                setLoading(false);
+            }
         }
     };
 

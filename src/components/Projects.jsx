@@ -94,7 +94,7 @@ export default function Projects() {
                 className="group cursor-none flex flex-col mx-auto w-full max-w-[450px] sm:max-w-none"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                onClick={() => navigate(`/projects/${project.id}`)}
+                onClick={() => navigate(`/projects/${project.id}`, { state: { project } })}
               >
                 <div className="relative w-full aspect-video rounded-2xl md:rounded-3xl overflow-hidden mb-4 bg-white/5 shadow-lg">
                   <img
