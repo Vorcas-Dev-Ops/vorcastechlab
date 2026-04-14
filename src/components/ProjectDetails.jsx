@@ -257,12 +257,12 @@ export default function ProjectDetails() {
         <div className="border-t border-white/10 pt-12 mt-8">
           <h2 className="text-3xl font-bold mb-6">Similar Projects</h2>
           {similarProjects.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory">
               {similarProjects.map((project) => (
                 <a
                   key={project.projectId}
                   href={`/projects/${project.projectId}`}
-                  className="group block overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 p-5 transition-all hover:-translate-y-1 hover:border-orange-400"
+                  className="group min-w-[280px] sm:min-w-[320px] lg:min-w-[340px] flex-shrink-0 block overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 p-5 transition-all hover:-translate-y-1 hover:border-orange-400 snap-start"
                 >
                   <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-white/5 mb-4">
                     <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
