@@ -10,6 +10,7 @@ import projectRoutes from './routes/projectRoutes.js';
 import careerRoutes from './routes/careerRoutes.js';
 import blogRoutes from './routes/blogRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import User from './models/User.js';
 
 // Load environment variables
 dotenv.config();
@@ -42,15 +43,44 @@ const logError = (message, error) => {
   fs.appendFileSync(logFile, errorMessage, { flag: 'a' });
 };
 
-try {
-  log('🚀 Starting server...');
-  log('Environment: ' + (process.env.NODE_ENV || 'development'));
-  log('Database URL: ' + (process.env.DATABASE_URL ? '✅ Configured' : '❌ Not configured'));
+const ensureAdminUser = async () => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
+  const adminName = process.env.ADMIN_NAME || 'Admin User';
 
-  // Connect to database (non-blocking)
-  connectDB();
+  if (!adminEmail || !adminPassword) {
+    log('⚠️ ADMIN_EMAIL or ADMIN_PASSWORD is not set. Skipping admin user creation.');
+    return;
+  }
 
-  app.use(cors());
+  const existingUser = await User.findOne({ where: { email: adminEmail } });
+  if (!existingUser) {
+    await User.create({
+      name: adminName,
+      email: adminEmail,
+      password: adminPassword,
+      isAdmin: true,
+    });
+    log(`✅ Default admin created: ${adminEmail}`);
+  } else if (!existingUser.isAdmin) {
+    existingUser.isAdmin = true;
+    await existingUser.save();
+    log(`✅ User ${adminEmail} updated to admin access.`);
+  } else {
+    log(`✅ Admin user already exists: ${adminEmail}`);
+  }
+};
+
+const startServer = async () => {
+  try {
+    log('🚀 Starting server...');
+    log('Environment: ' + (process.env.NODE_ENV || 'development'));
+    log('Database URL: ' + (process.env.DATABASE_URL ? '✅ Configured' : '❌ Not configured'));
+
+    await connectDB();
+    await ensureAdminUser();
+
+    app.use(cors());
   app.use(express.json({ limit: '50mb' }));
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -107,7 +137,12 @@ try {
     log('🌐 Visit http://localhost:' + PORT);
   });
 
+  return true;
+
 } catch (error) {
   logError('Failed to start server', error);
   process.exit(1);
 }
+};
+
+startServer();

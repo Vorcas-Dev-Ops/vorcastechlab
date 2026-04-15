@@ -20,7 +20,8 @@ const AdminLogin = () => {
             localStorage.setItem('token', data.token);
             navigate('/admin/dashboard');
         } catch (error) {
-            setError('Invalid credentials. Access denied.');
+            const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Invalid credentials. Access denied.';
+            setError(message);
             setLoading(false);
         }
     };
