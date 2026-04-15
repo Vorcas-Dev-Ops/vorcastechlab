@@ -40,65 +40,46 @@ export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
-  const initialProject = location.state?.project;
-  const [data, setData] = useState(initialProject || null);
-  const [loading, setLoading] = useState(!initialProject);
-  const [similarProjects, setSimilarProjects] = useState([]);
+  const routeStateProject = location.state?.project;
+  const initialData = routeStateProject ?? projectDetails[id] ?? null;
+
+  const [data, setData] = useState(initialData);
+  const [loading, setLoading] = useState(initialData ? false : true);
 
   useEffect(() => {
     AOS.init({ once: true, duration: 800, easing: 'ease-out-cubic' });
 
     const getProject = async () => {
-        if (!initialProject) {
-            setLoading(true);
-        }
-        // Check Static first
-        if (projectDetails[id]) {
-            setData(projectDetails[id]);
-            setLoading(false);
-            return;
-        }
+      if (projectDetails[id]) {
+        setData(projectDetails[id]);
+        setLoading(false);
+        return;
+      }
 
-        // Fetch Dynamic
-        try {
-            const res = await fetch(`/api/projects/${id}`);
-            if (res.ok) {
-                const json = await res.json();
-                setData(json);
-            } else {
-                setData(projectDetails.default);
-            }
-        } catch (err) {
-            setData(projectDetails.default);
-        } finally {
-            if (!initialProject) {
-                setLoading(false);
-            }
-        }
-    };
+      if (routeStateProject && routeStateProject.id === id) {
+        setData(routeStateProject);
+        setLoading(false);
+        return;
+      }
 
-    getProject();
-  }, [id]);
-
-  useEffect(() => {
-    if (!data) return;
-
-    const fetchSimilar = async () => {
+      setLoading(true);
       try {
-        const res = await fetch('/api/projects');
-        if (!res.ok) return;
-        const allProjects = await res.json();
-        const similar = allProjects
-          .filter((project) => project.projectId !== id && project.category === data.category)
-          .slice(0, 3);
-        setSimilarProjects(similar);
+        const res = await fetch(`/api/projects/${id}`);
+        if (res.ok) {
+          const json = await res.json();
+          setData(json);
+        } else {
+          setData(projectDetails.default);
+        }
       } catch (err) {
-        console.error('Error fetching similar projects:', err);
+        setData(projectDetails.default);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchSimilar();
-  }, [data, id]);
+    getProject();
+  }, [id, routeStateProject]);
 
   if (loading) return (
     <div className="min-h-screen bg-black flex items-center justify-center">
@@ -108,13 +89,6 @@ export default function ProjectDetails() {
 
   if (!data) return null;
 
-  const rawSiteUrl = data.siteUrl?.trim();
-  const normalizedSiteUrl = rawSiteUrl
-    ? /^https?:\/\//i.test(rawSiteUrl)
-      ? rawSiteUrl
-      : `https://${rawSiteUrl}`
-    : '#';
-
   return (
     <div className="min-h-screen bg-black text-white pt-24 pb-12 px-6 md:px-12 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
@@ -123,19 +97,17 @@ export default function ProjectDetails() {
         <div className="flex flex-col items-center justify-center text-center relative mb-16">
           <button
             onClick={() => navigate('/projects')}
-            className="mb-4 w-full max-w-[260px] self-center md:self-auto md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 flex items-center justify-center gap-2 text-sm text-white/60 hover:text-white transition-colors bg-white/5 py-2 px-4 rounded-full border border-white/10"
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors bg-white/5 py-2 px-4 rounded-full border border-white/10"
             data-aos="fade-right"
           >
             <ArrowLeft size={16} /> Back to Projects
           </button>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold break-words" data-aos="fade-down">{data.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold" data-aos="fade-down">{data.title}</h1>
         </div>
         {/* Dynamic Content Ordering */}
         {(() => {
-          const showGalleryFirst = data.showGalleryFirst !== false;
-
           const GallerySection = (
-            <div className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 ${showGalleryFirst ? 'md:order-1' : 'md:order-2'}`} key="gallery">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20" key="gallery">
               {data.images && Array.isArray(data.images) && data.images.map((img, idx) => (
                 <div
                   key={idx}
@@ -150,7 +122,7 @@ export default function ProjectDetails() {
           );
 
           const DetailsSection = (
-            <div className={`flex flex-col md:flex-row gap-16 lg:gap-32 mb-20 ${showGalleryFirst ? 'md:order-2' : 'md:order-1'}`} key="details">
+            <div className="flex flex-col md:flex-row gap-16 lg:gap-32 mb-20" key="details">
               {/* Left Metadata Column */}
               <div className="md:w-[250px] shrink-0" data-aos="fade-right" data-aos-delay="300">
                 <div className="space-y-4 text-sm mb-10">
@@ -170,7 +142,7 @@ export default function ProjectDetails() {
 
                 <div className="flex flex-col gap-3">
                   <a 
-                    href={normalizedSiteUrl} 
+                    href={data.siteUrl || '#'} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="group relative flex justify-center items-center text-zinc-600 text-sm font-bold w-full"
@@ -246,38 +218,10 @@ export default function ProjectDetails() {
             </div>
           );
 
-          return (
-            <div className="flex flex-col gap-16">
-              {DetailsSection}
-              {GallerySection}
-            </div>
-          );
+          return data.showGalleryFirst !== false 
+            ? [GallerySection, DetailsSection] 
+            : [DetailsSection, GallerySection];
         })()}
-
-        <div className="border-t border-white/10 pt-12 mt-8">
-          <h2 className="text-3xl font-bold mb-6">Similar Projects</h2>
-          {similarProjects.length > 0 ? (
-            <div className="flex gap-6 overflow-x-auto pb-4 snap-x snap-mandatory">
-              {similarProjects.map((project) => (
-                <a
-                  key={project.projectId}
-                  href={`/projects/${project.projectId}`}
-                  className="group min-w-[280px] sm:min-w-[320px] lg:min-w-[340px] flex-shrink-0 block overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 p-5 transition-all hover:-translate-y-1 hover:border-orange-400 snap-start"
-                >
-                  <div className="aspect-[4/3] overflow-hidden rounded-3xl bg-white/5 mb-4">
-                    <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
-                  </div>
-                  <div className="space-y-2">
-                    <span className="text-xs uppercase tracking-[0.3em] text-white/40">{project.category}</span>
-                    <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-orange-500">{project.title}</h3>
-                  </div>
-                </a>
-              ))}
-            </div>
-          ) : (
-            <p className="text-white/70">No similar projects available yet, check back later.</p>
-          )}
-        </div>
       </div>
     </div>
   );
