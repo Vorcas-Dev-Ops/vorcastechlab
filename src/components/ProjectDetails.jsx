@@ -45,6 +45,7 @@ export default function ProjectDetails() {
 
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(initialData ? false : true);
+  const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
     AOS.init({ once: true, duration: 800, easing: 'ease-out-cubic' });
@@ -56,23 +57,25 @@ export default function ProjectDetails() {
         return;
       }
 
-      if (routeStateProject && routeStateProject.id === id) {
+      if (routeStateProject && routeStateProject.projectId === id) {
         setData(routeStateProject);
         setLoading(false);
         return;
       }
 
       setLoading(true);
+      setNotFound(false);
+
       try {
         const res = await fetch(`/api/projects/${id}`);
         if (res.ok) {
           const json = await res.json();
           setData(json);
         } else {
-          setData(projectDetails.default);
+          setNotFound(true);
         }
       } catch (err) {
-        setData(projectDetails.default);
+        setNotFound(true);
       } finally {
         setLoading(false);
       }
@@ -84,6 +87,21 @@ export default function ProjectDetails() {
   if (loading) return (
     <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin"></div>
+    </div>
+  );
+
+  if (notFound) return (
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-6">
+      <div className="max-w-xl text-center">
+        <h1 className="text-4xl font-bold mb-4">Project not found</h1>
+        <p className="text-white/60 mb-8">The project ID you requested does not exist or could not be loaded.</p>
+        <button
+          onClick={() => navigate('/projects')}
+          className="px-6 py-3 rounded-full bg-orange-600 text-white font-bold uppercase tracking-wider"
+        >
+          Back to Projects
+        </button>
+      </div>
     </div>
   );
 

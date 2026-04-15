@@ -22,18 +22,21 @@ const Contact = () => {
 
 
   const [status, setStatus] = useState({ loading: false, success: false, message: '' });
+  const [formError, setFormError] = useState('');
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.service) {
-      alert("Please select a service type");
+      setFormError('Please select a service type.');
       return;
     }
 
+    setFormError('');
     setStatus({ loading: true, success: false, message: '' });
 
     try {
@@ -137,6 +140,11 @@ const Contact = () => {
                   </motion.div>
                 ) : (
                   <form onSubmit={handleSubmit} className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {(formError || (status.message && !status.success)) && (
+                      <div className="md:col-span-2 p-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm">
+                        {formError || status.message}
+                      </div>
+                    )}
                     <div className="space-y-1.5">
                       <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Your Name</label>
                       <div className="relative group/input">

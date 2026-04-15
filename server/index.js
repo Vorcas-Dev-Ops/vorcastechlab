@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
@@ -8,8 +10,8 @@ import { connectDB } from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import careerRoutes from './routes/careerRoutes.js';
-import blogRoutes from './routes/blogRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 import User from './models/User.js';
 
 // Load environment variables
@@ -80,9 +82,21 @@ const startServer = async () => {
     await connectDB();
     await ensureAdminUser();
 
+    app.use(compression());
+
+    const apiLimiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: { message: 'Too many requests from this IP, please try again later.' },
+      skipFailedRequests: true,
+    });
+
     app.use(cors());
-  app.use(express.json({ limit: '50mb' }));
-  app.use(express.urlencoded({ limit: '50mb', extended: true }));
+    app.use('/api', apiLimiter);
+    app.use(express.json({ limit: '50mb' }));
+    app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // Health check endpoint
   app.get('/api/health', (req, res) => {
@@ -93,8 +107,8 @@ const startServer = async () => {
   app.use('/api/auth', authRoutes);
   app.use('/api/projects', projectRoutes);
   app.use('/api/careers', careerRoutes);
-  app.use('/api/blogs', blogRoutes);
   app.use('/api/contact', contactRoutes);
+  app.use('/api/users', userRoutes);
 
   // Error handling middleware for JSON API errors
   app.use((err, req, res, next) => {

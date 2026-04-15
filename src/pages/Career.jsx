@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, MapPin, Clock, Search } from 'lucide-react';
+import { Briefcase, MapPin, Clock } from 'lucide-react';
 
 const Career = () => {
     const [jobs, setJobs] = useState([]);
@@ -14,11 +14,17 @@ const Career = () => {
                     setJobs(data);
                 }
             } catch (error) {
-                console.error("Error fetching careers:", error);
+                console.error('Error fetching careers:', error);
             }
         };
         fetchCareers();
     }, []);
+
+    const normalizeArray = (field) => {
+        if (Array.isArray(field)) return field;
+        if (typeof field === 'string') return field.split(',').map((item) => item.trim()).filter(Boolean);
+        return [];
+    };
 
     const fadeUp = {
         hidden: { opacity: 0, y: 30 },
@@ -56,46 +62,82 @@ const Career = () => {
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-                    {jobs.map((job, idx) => (
-                        <motion.div
-                            key={job.id}
-                            initial="hidden"
-                            whileInView="show"
-                            variants={fadeUp}
-                            viewport={{ once: true }}
-                            transition={{ delay: idx * 0.1 }}
-                            className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-500/50 transition-all group relative overflow-hidden"
-                        >
-                            <div className="flex flex-wrap gap-3 mb-6">
-                                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-[10px] uppercase font-bold text-white/60">
-                                    <MapPin size={12} /> {job.location}
-                                </span>
-                                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-[10px] uppercase font-bold text-white/60">
-                                    <Clock size={12} /> {job.type}
-                                </span>
-                            </div>
+                    {jobs.map((job, idx) => {
+                        const requirements = normalizeArray(job.requirements);
+                        const responsibilities = normalizeArray(job.responsibilities);
 
-                            <h3 className="text-2xl font-bold mb-4 group-hover:text-orange-500 transition-colors">{job.title}</h3>
-                            <p className="text-white/50 text-sm leading-relaxed mb-8">
-                                {job.description}
-                            </p>
-
-                            <div className="space-y-3 mb-8">
-                                <h4 className="text-[11px] uppercase font-black text-white/30 tracking-widest">Requirements</h4>
-                                <div className="flex flex-wrap gap-2">
-                                    {job.requirements.map((req, rIdx) => (
-                                        <span key={rIdx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] text-white/80">
-                                            {req}
-                                        </span>
-                                    ))}
+                        return (
+                            <motion.div
+                                key={job.id}
+                                initial="hidden"
+                                whileInView="show"
+                                variants={fadeUp}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.1 }}
+                                className="p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-500/50 transition-all group relative overflow-hidden"
+                            >
+                                <div className="flex flex-wrap gap-3 mb-6">
+                                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-[10px] uppercase font-bold text-white/60">
+                                        <MapPin size={12} /> {job.location}
+                                    </span>
+                                    <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 text-[10px] uppercase font-bold text-white/60">
+                                        <Clock size={12} /> {job.type}
+                                    </span>
                                 </div>
-                            </div>
 
-                            <button className="w-full py-3.5 rounded-xl bg-white text-black font-bold uppercase tracking-widest text-[11px] hover:bg-orange-500 hover:text-white transition-all transform active:scale-[0.98]">
-                                Apply for this Position
-                            </button>
-                        </motion.div>
-                    ))}
+                                <h3 className="text-2xl font-bold mb-4 group-hover:text-orange-500 transition-colors">{job.title}</h3>
+                                <p className="text-white/50 text-sm leading-relaxed mb-8">
+                                    {job.description}
+                                </p>
+
+                                {!!job.department && (
+                                    <div className="mb-4 text-sm text-white/60">
+                                        <strong>Department:</strong> {job.department}
+                                    </div>
+                                )}
+                                {!!job.experience && (
+                                    <div className="mb-4 text-sm text-white/60">
+                                        <strong>Experience:</strong> {job.experience}
+                                    </div>
+                                )}
+                                {!!job.salary && (
+                                    <div className="mb-4 text-sm text-white/60">
+                                        <strong>Salary:</strong> {job.salary}
+                                    </div>
+                                )}
+
+                                <div className="space-y-3 mb-8">
+                                    <h4 className="text-[11px] uppercase font-black text-white/30 tracking-widest">Requirements</h4>
+                                    <div className="flex flex-wrap gap-2">
+                                        {requirements.length > 0 ? requirements.map((req, rIdx) => (
+                                            <span key={rIdx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] text-white/80">
+                                                {req}
+                                            </span>
+                                        )) : (
+                                            <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] text-white/80">No specific requirements listed.</span>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {responsibilities.length > 0 && (
+                                    <div className="space-y-3 mb-8">
+                                        <h4 className="text-[11px] uppercase font-black text-white/30 tracking-widest">Responsibilities</h4>
+                                        <div className="flex flex-wrap gap-2">
+                                            {responsibilities.map((responsibility, rIdx) => (
+                                                <span key={rIdx} className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[11px] text-white/80">
+                                                    {responsibility}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                <button className="w-full py-3.5 rounded-xl bg-white text-black font-bold uppercase tracking-widest text-[11px] hover:bg-orange-500 hover:text-white transition-all transform active:scale-[0.98]">
+                                    Apply for this Position
+                                </button>
+                            </motion.div>
+                        );
+                    })}
                 </div>
 
                 <div className="mt-20 p-10 rounded-[2.5rem] bg-gradient-to-br from-orange-500/10 to-transparent border border-white/5 text-center">

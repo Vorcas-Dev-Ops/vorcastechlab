@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import {
     Plus, Trash, LogOut, ChevronRight,
-    Briefcase, LayoutGrid, FileText,
+    Briefcase, LayoutGrid,
     Image as ImageIcon, Globe, Calendar, User, AlignLeft
 } from 'lucide-react';
 
@@ -136,7 +136,6 @@ const ProjectsManager = ({ token }) => {
             siteUrl: '',
             showGalleryFirst: true
         });
-        setMainImage(null);
         setMainImage(null);
         setDetailImages([]);
         setMainImagePreview(null);
@@ -501,127 +500,21 @@ const CareersManager = ({ token }) => {
     );
 };
 
-// --- BLOGS COMPONENT ---
-const BlogsManager = ({ token }) => {
-    const [blogs, setBlogs] = useState([]);
-    const [uploading, setUploading] = useState(false);
-    const [formData, setFormData] = useState({ title: '', slug: '', category: '', excerpt: '', content: '', author: 'Vorcas Admin' });
-    const [image, setImage] = useState(null);
-
-    const [isEditing, setIsEditing] = useState(false);
-    const [editingId, setEditingId] = useState(null);
-
-    const fetchBlogs = async () => {
-        try { const { data } = await axios.get('/api/blogs'); setBlogs(data); }
-        catch (error) { console.error(error); }
-    };
-    useEffect(() => { fetchBlogs(); }, []);
-
-    const resetForm = () => {
-        setFormData({ title: '', slug: '', category: '', excerpt: '', content: '', author: 'Vorcas Admin' });
-        setImage(null);
-        setIsEditing(false);
-        setEditingId(null);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setUploading(true);
-        try {
-            const data = new FormData();
-            Object.keys(formData).forEach(key => data.append(key, formData[key]));
-            if (image) data.append('image', image);
-
-            if (isEditing) {
-                await axios.put(`/api/blogs/${editingId}`, data, { headers: { Authorization: `Bearer ${token}` } });
-                alert('Blog Updated!');
-            } else {
-                await axios.post('/api/blogs', data, { headers: { Authorization: `Bearer ${token}` } });
-                alert('Daily Blog Published!');
-            }
-            fetchBlogs();
-            resetForm();
-        } catch (error) { alert('Error!'); } finally { setUploading(false); }
-    };
-
-    const handleEdit = (blog) => {
-        setIsEditing(true);
-        setEditingId(blog.id);
-        setFormData({
-            title: blog.title,
-            slug: blog.slug,
-            category: blog.category,
-            excerpt: blog.excerpt,
-            content: blog.content,
-            author: blog.author || 'Vorcas Admin'
-        });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleDelete = async (id) => {
-        if (window.confirm('Delete blog?')) {
-            await axios.delete(`/api/blogs/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-            fetchBlogs();
-        }
-    };
-
-    return (
-        <div className="space-y-12 animate-in zoom-in duration-500">
-            <aside className="p-8 rounded-[2rem] bg-white/[0.03] border border-white/10">
-                <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-lg font-bold flex items-center gap-2">
-                        {isEditing ? 'Edit Insight' : 'Daily Insight'}
-                        {isEditing ? <ChevronRight size={18} className="text-orange-500" /> : <FileText size={18} className="text-orange-500" />}
-                    </h3>
-                    {isEditing && (
-                        <button onClick={resetForm} className="text-[10px] uppercase font-bold text-white/30 hover:text-white">Cancel Edit</button>
-                    )}
-                </div>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Blog Title" value={formData.title} onChange={e => setFormData({ ...formData, title: e.target.value })} required />
-                        <input className="bg-white/5 border border-white/10 p-2.5 rounded-xl text-sm" placeholder="Slug (no-spaces)" value={formData.slug} onChange={e => setFormData({ ...formData, slug: e.target.value })} required />
-                        <input type="file" className="bg-white/5 border border-white/10 p-1.5 rounded-xl text-[10px] file:bg-white/10 file:text-white" onChange={e => setImage(e.target.files[0])} />
-                    </div>
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-16 text-xs" placeholder="Short Excerpt" value={formData.excerpt} onChange={e => setFormData({ ...formData, excerpt: e.target.value })} required />
-                    <textarea className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-48 text-xs font-mono" placeholder="Full Content (Markdown or Text)" value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} required />
-                    <button type="submit" disabled={uploading} className="w-full py-4 bg-orange-600 rounded-xl font-bold uppercase tracking-widest text-xs">
-                        {uploading ? 'Processing...' : isEditing ? 'Update Post' : 'Push to Daily Feed'}
-                    </button>
-                </form>
-            </aside>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {blogs.map(b => (
-                    <div key={b.id} className="p-5 rounded-2xl bg-white/[0.02] border border-white/10 flex items-center gap-5 group">
-                        <img src={b.image} className="w-16 h-16 rounded-xl object-cover shrink-0" />
-                        <div className="flex-1"><h4 className="font-bold text-sm">{b.title}</h4><p className="text-[10px] text-white/30 truncate">{b.excerpt}</p></div>
-                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                            <button onClick={() => handleEdit(b)} className="p-2 text-orange-500 hover:bg-white/5 rounded-lg"><FileText size={16} /></button>
-                            <button onClick={() => handleDelete(b.id)} className="text-red-500 hover:bg-white/5 p-2 rounded-lg transition-all"><Trash size={16} /></button>
-                        </div>
-                    </div>
-
-                ))}
-            </div>
-        </div>
-    );
-};
-
 // --- MAIN DASHBOARD ---
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('projects');
-    const token = localStorage.getItem('token');
 
-    useEffect(() => { if (!token) navigate('/admin/login'); }, [token]);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) navigate('/admin/login');
+    }, [navigate]);
 
     const handleLogout = () => { localStorage.removeItem('token'); navigate('/admin/login'); };
 
     const navItems = [
         { id: 'projects', label: 'Projects', icon: <LayoutGrid size={16} /> },
-        { id: 'careers', label: 'Careers', icon: <Briefcase size={16} /> },
-        { id: 'blogs', label: 'Daily Blog', icon: <FileText size={16} /> }
+        { id: 'careers', label: 'Careers', icon: <Briefcase size={16} /> }
     ];
 
     return (
@@ -674,7 +567,6 @@ const AdminDashboard = () => {
                     <div className="animate-in fade-in slide-in-from-bottom-5 duration-700">
                         {currentTab === 'projects' && <ProjectsManager token={token} />}
                         {currentTab === 'careers' && <CareersManager token={token} />}
-                        {currentTab === 'blogs' && <BlogsManager token={token} />}
                     </div>
                 </div>
             </main>

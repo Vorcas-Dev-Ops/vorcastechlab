@@ -15,6 +15,7 @@ import Footer from './components/Footer';
 import Projects from './components/Projects';
 import ProjectDetails from './components/ProjectDetails';
 import Navbar from './components/Navbar';
+import NotFound from './components/NotFound';
 // Scroll Management Component
 const ScrollHandler = ({ aboutBoxRef, aboutSectionRef, aboutBgTextRef, teamGridRef, teamBgTextRef }) => {
   const { pathname } = useLocation();
@@ -26,11 +27,12 @@ const ScrollHandler = ({ aboutBoxRef, aboutSectionRef, aboutBgTextRef, teamGridR
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     });
 
+    let lenisRafId = null;
     const raf = (time) => {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      lenisRafId = requestAnimationFrame(raf);
     };
-    requestAnimationFrame(raf);
+    lenisRafId = requestAnimationFrame(raf);
 
     // 2. Scroll-Linked Animations Loop
     const handleScroll = () => {
@@ -117,6 +119,9 @@ const ScrollHandler = ({ aboutBoxRef, aboutSectionRef, aboutBgTextRef, teamGridR
       window.removeEventListener('scroll', handleScroll);
       revealObserver.disconnect();
       if (teamObserver) teamObserver.disconnect();
+      if (lenisRafId) {
+        cancelAnimationFrame(lenisRafId);
+      }
       lenis.destroy();
     };
   }, [pathname]); // Re-run on route change
@@ -141,6 +146,13 @@ const AppContent = () => {
 
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token && (location.pathname === '/' || location.pathname === '/admin/login')) {
+      localStorage.removeItem('token');
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const checkScroll = () => setIsScrolled(window.scrollY > 50);
@@ -190,6 +202,7 @@ const AppContent = () => {
           <Route path="/career" element={<Career />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 

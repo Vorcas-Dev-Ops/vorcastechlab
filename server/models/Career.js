@@ -14,11 +14,27 @@ const Career = sequelize.define('Career', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    department: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    experience: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    salary: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     description: {
         type: DataTypes.TEXT,
         allowNull: false
     },
     requirements: {
+        type: DataTypes.ARRAY(DataTypes.TEXT),
+        defaultValue: []
+    },
+    responsibilities: {
         type: DataTypes.ARRAY(DataTypes.TEXT),
         defaultValue: []
     },
