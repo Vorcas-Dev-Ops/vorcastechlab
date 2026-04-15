@@ -20,21 +20,19 @@ router.post('/login', asyncHandler(async (req, res) => {
     if (user && (await user.matchPassword(password))) {
         // Enforce admin-only login
         if (!user.isAdmin) {
-            res.status(401);
-            throw new Error('Not authorized as an admin. Access denied.');
+            return res.status(401).json({ message: 'Not authorized as an admin. Access denied.' });
         }
 
-        res.json({
+        return res.json({
             id: user.id,
             name: user.name,
             email: user.email,
             isAdmin: user.isAdmin,
             token: generateToken(user.id),
         });
-    } else {
-        res.status(401);
-        throw new Error('Invalid email or password');
     }
+
+    return res.status(401).json({ message: 'Invalid email or password' });
 }));
 
 // Public registration disabled for security. 

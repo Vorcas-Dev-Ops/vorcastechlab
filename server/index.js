@@ -96,6 +96,15 @@ const startServer = async () => {
   app.use('/api/blogs', blogRoutes);
   app.use('/api/contact', contactRoutes);
 
+  // Error handling middleware for JSON API errors
+  app.use((err, req, res, next) => {
+    const statusCode = res.statusCode && res.statusCode >= 400 ? res.statusCode : 500;
+    res.status(statusCode).json({
+      message: err.message || 'Internal server error',
+      ...(process.env.NODE_ENV === 'development' ? { stack: err.stack } : {}),
+    });
+  });
+
   // Serve React static files from dist folder
   const buildPath = path.join(__dirname, '../dist');
   const indexPath = path.join(buildPath, 'index.html');
