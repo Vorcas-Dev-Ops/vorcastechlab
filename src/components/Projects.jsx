@@ -2,6 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
+const sanitizeProjectError = (raw) => {
+  let message = raw;
+  if (raw?.message) {
+    message = raw.message;
+  }
+  if (typeof message !== 'string') {
+    message = JSON.stringify(message);
+  }
+  message = message.replace(/<[^>]+>/g, '').trim();
+  if (!message || /transfer quota|data transfer quota|upgrade your plan|exceeded.*quota/i.test(message)) {
+    return 'Unable to load projects. Please try again later.';
+  }
+  if (/^<\/?html|<!doctype html/i.test(message) || /<body|<head/i.test(message)) {
+    return 'Unable to load projects. Please try again later.';
+  }
+  return message;
+};
+
 export default function Projects() {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
@@ -37,7 +55,7 @@ export default function Projects() {
         }
       } catch (renderError) {
         console.error('Error fetching projects from backend:', renderError);
-        setError(renderError.message || 'Unable to load projects.');
+        setError(sanitizeProjectError(renderError));
       } finally {
         setLoading(false);
       }

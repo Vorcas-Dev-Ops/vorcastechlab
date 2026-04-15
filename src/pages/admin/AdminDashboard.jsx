@@ -7,6 +7,35 @@ import {
     Image as ImageIcon, Globe, Calendar, User, AlignLeft
 } from 'lucide-react';
 
+const sanitizeDashboardError = (raw) => {
+    let message = raw;
+    if (raw?.response?.data?.message) {
+        message = raw.response.data.message;
+    } else if (raw?.response?.data?.error) {
+        message = raw.response.data.error;
+    } else if (raw?.response?.data) {
+        message = raw.response.data;
+    } else if (raw?.message) {
+        message = raw.message;
+    }
+
+    if (typeof message !== 'string') {
+        message = JSON.stringify(message);
+    }
+
+    message = message.replace(/<[^>]+>/g, '').trim();
+
+    if (/transfer quota|data transfer quota|upgrade your plan|exceeded.*quota/i.test(message)) {
+        return 'Service temporarily unavailable. Please try again later.';
+    }
+
+    if (/^<\/?html|<!doctype html/i.test(message) || /<body|<head/i.test(message)) {
+        return 'Service temporarily unavailable. Please try again later.';
+    }
+
+    return message || 'Service temporarily unavailable. Please try again later.';
+};
+
 // --- PROJECTS COMPONENT ---
 const ProjectsManager = ({ token }) => {
     const [projects, setProjects] = useState([]);
@@ -165,7 +194,7 @@ const ProjectsManager = ({ token }) => {
             fetchProjects();
             resetForm();
         } catch (error) {
-            const msg = error.response?.data?.message || error.message || 'Unknown error';
+            const msg = sanitizeDashboardError(error);
             alert(`Save Error: ${msg}`);
             console.error(error);
         } finally { setUploading(false); }

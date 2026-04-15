@@ -4,6 +4,35 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, User, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+const sanitizeErrorMessage = (raw) => {
+    let message = '';
+    if (raw?.response?.data?.message) {
+        message = raw.response.data.message;
+    } else if (raw?.response?.data?.error) {
+        message = raw.response.data.error;
+    } else if (raw?.response?.data) {
+        message = raw.response.data;
+    } else if (raw?.message) {
+        message = raw.message;
+    }
+
+    if (typeof message !== 'string') {
+        message = JSON.stringify(message);
+    }
+
+    message = message.replace(/<[^>]+>/g, '').trim();
+
+    if (/transfer quota|data transfer quota|upgrade your plan|exceeded.*quota/i.test(message)) {
+        return 'Service temporarily unavailable. Please try again later.';
+    }
+
+    if (/^<\/?html|<!doctype html/i.test(message) || /<body|<head/i.test(message)) {
+        return 'Service temporarily unavailable. Please try again later.';
+    }
+
+    return message || 'Service temporarily unavailable. Please try again later.';
+};
+
 const AdminLogin = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -20,7 +49,7 @@ const AdminLogin = () => {
             localStorage.setItem('token', data.token);
             navigate('/admin/dashboard');
         } catch (error) {
-            const message = error.response?.data?.message || error.response?.data?.error || error.message || 'Invalid credentials. Access denied.';
+            const message = sanitizeErrorMessage(error);
             setError(message);
             setLoading(false);
         }
