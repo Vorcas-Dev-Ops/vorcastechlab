@@ -8,16 +8,22 @@ if (!process.env.DATABASE_URL) {
   console.warn('⚠️ DATABASE_URL not set. Using in-memory database.');
 }
 
-const sequelize = new Sequelize(process.env.DATABASE_URL || 'sqlite::memory:', {
-  dialect: process.env.DATABASE_URL ? 'postgres' : 'sqlite',
-  logging: false, // Set to console.log to see SQL queries
-  dialectOptions: process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost') ? {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  } : undefined
-});
+const sequelize = process.env.DATABASE_URL
+  ? new Sequelize(process.env.DATABASE_URL, {
+      dialect: 'postgres',
+      logging: false,
+      dialectOptions: process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost') ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      } : undefined,
+    })
+  : new Sequelize({
+      dialect: 'sqlite',
+      storage: process.env.SQLITE_STORAGE || ':memory:',
+      logging: false,
+    });
 
 const connectDB = async () => {
     try {

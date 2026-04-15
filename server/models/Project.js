@@ -57,7 +57,7 @@ const Project = sequelize.define('Project', {
         ]
     },
     images: {
-        type: DataTypes.ARRAY(DataTypes.TEXT),
+        type: DataTypes.JSON,
         defaultValue: []
     },
     colSpan: {

@@ -31,11 +31,11 @@ const Career = sequelize.define('Career', {
         allowNull: false
     },
     requirements: {
-        type: DataTypes.ARRAY(DataTypes.TEXT),
+        type: DataTypes.JSON,
         defaultValue: []
     },
     responsibilities: {
-        type: DataTypes.ARRAY(DataTypes.TEXT),
+        type: DataTypes.JSON,
         defaultValue: []
     },
     applicationUrl: {
