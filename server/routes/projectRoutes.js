@@ -3,6 +3,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Project from '../models/Project.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
+import { cacheResponse } from '../middleware/cacheMiddleware.js';
 
 const router = express.Router();
 
@@ -15,7 +16,7 @@ const convertToBase64 = (file) => {
 // @desc    Fetch all projects
 // @route   GET /api/projects
 // @access  Public
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const projects = await Project.findAll({
         attributes: ['projectId', 'title', 'category', 'image']
     });
@@ -25,7 +26,7 @@ router.get('/', asyncHandler(async (req, res) => {
 // @desc    Fetch single project
 // @route   GET /api/projects/:id
 // @access  Public
-router.get('/:id', asyncHandler(async (req, res) => {
+router.get('/:id', cacheResponse(120), asyncHandler(async (req, res) => {
     const project = await Project.findOne({ where: { projectId: req.params.id } });
     if (project) {
         res.json(project);

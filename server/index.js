@@ -128,8 +128,8 @@ const startServer = async () => {
   log('index.html path: ' + indexPath);
   log('index.html exists: ' + (indexExists ? '✅' : '❌'));
 
-  // Serve all static files from dist directory
-  app.use(express.static(buildPath));
+  // Serve all static files from dist directory with caching for static assets
+  app.use(express.static(buildPath, { maxAge: '1d', immutable: true }));
   log('✅ Static file serving configured');
 
   // SPA fallback - serve index.html for non-API routes
@@ -145,6 +145,7 @@ const startServer = async () => {
       return res.status(503).json({ error: 'Frontend not available' });
     }
     
+    res.setHeader('Cache-Control', 'no-store');
     res.sendFile(indexPath, (err) => {
       if (err) {
         logError('Failed to send index.html', err);

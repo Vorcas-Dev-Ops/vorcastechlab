@@ -2,6 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import Career from '../models/Career.js';
 import { protect, admin } from '../middleware/authMiddleware.js';
+import { cacheResponse } from '../middleware/cacheMiddleware.js';
 
 const router = express.Router();
 
@@ -21,7 +22,7 @@ const parseArrayField = (field) => {
 // @desc    Fetch all careers
 // @route   GET /api/careers
 // @access  Public
-router.get('/', asyncHandler(async (req, res) => {
+router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const careers = await Career.findAll();
     res.json(careers);
 }));
