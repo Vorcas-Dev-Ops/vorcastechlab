@@ -88,7 +88,7 @@ const Contact = () => {
               {[
                 { icon: <Mail size={16} />, label: "Email Us", val: "support@vorcastechlab.com", link: "mailto:support@vorcastechlab.com" },
                 { icon: <Phone size={16} />, label: "Call Us", val: "+91 8123139994", link: "tel:+91 8123139994" },
-                { icon: <MapPin size={16} />, label: "Visit Us", val: "Innovation Hub, Suite 400", link: "#" }
+                { icon: <MapPin size={16} />, label: "Visit Us", val: "2nd Floor, Plot No-29, Thambu Chetty Palya Main Rd, Akshaya Nagar 1st Block, Akshaya Nagar, Ramamurthy Nagar, Bengaluru, Karnataka 560016", link: "#" }
               ].map((item, idx) => (
                 <a
                   key={idx}

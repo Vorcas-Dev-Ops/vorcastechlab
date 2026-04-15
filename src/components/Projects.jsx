@@ -10,10 +10,17 @@ export default function Projects() {
   const cursorRef = useRef(null);
   const rafRef = useRef(null);
 
+  const [error, setError] = useState('');
+
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const response = await fetch('/api/projects');
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || response.statusText || 'Failed to load projects');
+        }
+
         const dynamicProjects = await response.json();
 
         if (Array.isArray(dynamicProjects)) {
@@ -22,9 +29,15 @@ export default function Projects() {
             id: p.projectId // Mapping backend projectId to frontend id
           }));
           setProjects(mapped);
+          if (mapped.length === 0) {
+            setError('No projects found yet.');
+          }
+        } else {
+          setError('Unexpected response from the projects API.');
         }
-      } catch (error) {
-        console.error('Error fetching projects from backend:', error);
+      } catch (renderError) {
+        console.error('Error fetching projects from backend:', renderError);
+        setError(renderError.message || 'Unable to load projects.');
       } finally {
         setLoading(false);
       }
@@ -79,6 +92,12 @@ export default function Projects() {
             A showcase of our premium projects. Minimalist aesthetics and high end execution.
           </p>
         </div>
+
+        {!loading && error && (
+          <div className="mb-8 p-6 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-200 text-sm text-center">
+            {error}
+          </div>
+        )}
 
         {loading ? (
           <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
