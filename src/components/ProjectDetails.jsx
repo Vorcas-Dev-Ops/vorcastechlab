@@ -45,7 +45,7 @@ export default function ProjectDetails() {
     routeStateProject.description || routeStateProject.approach || routeStateProject.problem || routeStateProject.solution ||
     (Array.isArray(routeStateProject.images) && routeStateProject.images.length > 0)
   );
-  const initialData = hasFullRouteState ? routeStateProject : projectDetails[id] ?? null;
+  const initialData = projectDetails[id] ?? (hasFullRouteState ? routeStateProject : null);
 
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(initialData ? false : true);
@@ -57,12 +57,6 @@ export default function ProjectDetails() {
     const getProject = async () => {
       if (projectDetails[id]) {
         setData(projectDetails[id]);
-        setLoading(false);
-        return;
-      }
-
-      if (hasFullRouteState) {
-        setData(routeStateProject);
         setLoading(false);
         return;
       }
@@ -126,6 +120,13 @@ export default function ProjectDetails() {
           </button>
           <h1 className="text-4xl md:text-5xl font-bold" data-aos="fade-down">{data.title}</h1>
         </div>
+
+        {data.image && (
+          <div className="mb-16 overflow-hidden rounded-[2rem] bg-white/5 border border-white/10" data-aos="fade-up">
+            <img src={data.image} alt={data.title} className="w-full h-[450px] object-cover" />
+          </div>
+        )}
+
         {/* Dynamic Content Ordering */}
         {(() => {
           const GallerySection = (
