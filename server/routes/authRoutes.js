@@ -52,4 +52,17 @@ router.post('/register', asyncHandler(async (req, res) => {
 }));
 */
 
+router.get('/debug-admin', asyncHandler(async (req, res) => {
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@vorcas.com';
+    const user = await User.findOne({ where: { email: adminEmail } });
+
+    res.json({
+        databaseUrlConfigured: Boolean(process.env.DATABASE_URL),
+        adminEmail,
+        adminUserFound: Boolean(user),
+        isAdmin: user ? Boolean(user.isAdmin) : false,
+        userEmail: user ? user.email : null,
+    });
+}));
+
 export default router;
