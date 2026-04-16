@@ -59,6 +59,7 @@ const ProjectsManager = ({ token }) => {
     const [detailImages, setDetailImages] = useState([]);
     const [mainImagePreview, setMainImagePreview] = useState(null);
     const [detailImagesPreviews, setDetailImagesPreviews] = useState([]);
+    const [loadingProjects, setLoadingProjects] = useState(true);
 
     // --- Rearrange Logic ---
     const moveImage = (index, direction) => {
@@ -114,10 +115,15 @@ const ProjectsManager = ({ token }) => {
     }, [detailImages]);
 
     const fetchProjects = async () => {
+        setLoadingProjects(true);
         try {
             const { data } = await axios.get('/api/projects');
             setProjects(data);
-        } catch (error) { console.error(error); }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoadingProjects(false);
+        }
     };
 
     useEffect(() => { fetchProjects(); }, []);
@@ -366,19 +372,28 @@ const ProjectsManager = ({ token }) => {
                 </form>
             </aside>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {projects.map(p => (
-                    <div key={p.projectId} className="p-4 rounded-3xl bg-white/[0.02] border border-white/10 group flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                            <img src={p.image} className="w-10 h-10 rounded-lg object-cover" />
-                            <div><h4 className="text-sm font-bold">{p.title}</h4><p className="text-[10px] text-white/40">{p.category}</p></div>
-                        </div>
-                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
-                            <button onClick={() => handleEdit(p)} className="p-2 text-orange-500 hover:bg-white/5 rounded-lg"><LayoutGrid size={14} /></button>
-                            <button onClick={() => handleDelete(p.projectId)} className="p-2 text-red-500 hover:bg-white/5 rounded-lg"><Trash size={14} /></button>
-                        </div>
+                {loadingProjects ? (
+                    <div className="col-span-full p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-center text-sm text-white/50">
+                        Loading projects...
                     </div>
-
-                ))}
+                ) : projects.length === 0 ? (
+                    <div className="col-span-full p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-center text-sm text-white/50">
+                        No projects found. Add a new project to get started.
+                    </div>
+                ) : (
+                    projects.map(p => (
+                        <div key={p.projectId} className="p-4 rounded-3xl bg-white/[0.02] border border-white/10 flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <img src={p.image} className="w-10 h-10 rounded-lg object-cover" />
+                                <div><h4 className="text-sm font-bold">{p.title}</h4><p className="text-[10px] text-white/40">{p.category}</p></div>
+                            </div>
+                            <div className="flex items-center gap-2 opacity-100 transition-all">
+                                <button onClick={() => handleEdit(p)} className="p-2 text-orange-500 hover:bg-white/5 rounded-lg" title="Edit project"><LayoutGrid size={14} /></button>
+                                <button onClick={() => handleDelete(p.projectId)} className="p-2 text-red-500 hover:bg-white/5 rounded-lg" title="Delete project"><Trash size={14} /></button>
+                            </div>
+                        </div>
+                    ))
+                )}
             </div>
         </div>
     );
