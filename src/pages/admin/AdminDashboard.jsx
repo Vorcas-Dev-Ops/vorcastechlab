@@ -504,11 +504,11 @@ const CareersManager = ({ token }) => {
 const AdminDashboard = () => {
     const navigate = useNavigate();
     const [currentTab, setCurrentTab] = useState('projects');
+    const token = localStorage.getItem('token');
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
         if (!token) navigate('/admin/login');
-    }, [navigate]);
+    }, [navigate, token]);
 
     const handleLogout = () => { localStorage.removeItem('token'); navigate('/admin/login'); };
 
