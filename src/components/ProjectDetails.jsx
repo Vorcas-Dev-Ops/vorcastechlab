@@ -41,7 +41,11 @@ export default function ProjectDetails() {
   const navigate = useNavigate();
   const location = useLocation();
   const routeStateProject = location.state?.project;
-  const initialData = routeStateProject ?? projectDetails[id] ?? null;
+  const hasFullRouteState = routeStateProject && routeStateProject.projectId === id && (
+    routeStateProject.description || routeStateProject.approach || routeStateProject.problem || routeStateProject.solution ||
+    (Array.isArray(routeStateProject.images) && routeStateProject.images.length > 0)
+  );
+  const initialData = hasFullRouteState ? routeStateProject : projectDetails[id] ?? null;
 
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(initialData ? false : true);
@@ -57,7 +61,7 @@ export default function ProjectDetails() {
         return;
       }
 
-      if (routeStateProject && routeStateProject.projectId === id) {
+      if (hasFullRouteState) {
         setData(routeStateProject);
         setLoading(false);
         return;
