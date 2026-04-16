@@ -14,10 +14,19 @@ const generateToken = (id) => {
 // @access  Public (Admin Only)
 router.post('/login', asyncHandler(async (req, res) => {
     const { email, password } = req.body;
-    
-    const user = await User.findOne({ where: { email } });
+    console.log('AUTH LOGIN attempt:', { email, passwordProvided: Boolean(password) });
 
-    if (user && (await user.matchPassword(password))) {
+    const user = await User.findOne({ where: { email } });
+    console.log('AUTH LOGIN user found:', user ? { email: user.email, isAdmin: user.isAdmin } : null);
+
+    if (user) {
+        const passwordMatch = await user.matchPassword(password);
+        console.log('AUTH LOGIN passwordMatch:', passwordMatch);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
         // Enforce admin-only login
         if (!user.isAdmin) {
             return res.status(401).json({ message: 'Not authorized as an admin. Access denied.' });
