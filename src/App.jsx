@@ -148,13 +148,6 @@ const AppContent = () => {
   const isAdminPage = location.pathname.startsWith('/admin');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token && (location.pathname === '/' || location.pathname === '/admin/login')) {
-      localStorage.removeItem('token');
-    }
-  }, [location.pathname]);
-
-  useEffect(() => {
     const checkScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener('scroll', checkScroll);
     return () => window.removeEventListener('scroll', checkScroll);

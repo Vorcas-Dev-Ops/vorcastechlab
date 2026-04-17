@@ -43,9 +43,9 @@ const AdminLogin = () => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            localStorage.removeItem('token');
+            navigate('/admin/dashboard', { replace: true });
         }
-    }, []);
+    }, [navigate]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
