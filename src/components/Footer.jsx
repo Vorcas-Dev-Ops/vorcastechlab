@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Facebook, Instagram } from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 
@@ -50,11 +50,7 @@ export default function Footer() {
 
               <div className="flex gap-4 lg:gap-6 mt-0">
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 lg:w-7 lg:h-7">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                    <path d="M2 9h4v12H2z" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
+                  <Linkedin className="w-5 h-5 lg:w-7 lg:h-7" />
                 </a>
                 <a href="https://facebook.com" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
                   <Facebook className="w-5 h-5 lg:w-7 lg:h-7" />
@@ -123,11 +119,7 @@ export default function Footer() {
 
               <div className="flex gap-4">
                 <a href="https://linkedin.com" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn" className="bg-white/10 p-3 rounded-xl">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                    <path d="M2 9h4v12H2z" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
+                  <Linkedin className="w-6 h-6" />
                 </a>
                 <a href="https://facebook.com" className="bg-white/10 p-3 rounded-xl">
                   <Facebook className="w-6 h-6" />
