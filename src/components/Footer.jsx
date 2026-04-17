@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Facebook, Instagram, X } from "lucide-react";
+import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 
@@ -49,8 +49,8 @@ export default function Footer() {
               </h2>
 
               <div className="flex gap-4 lg:gap-6 mt-0">
-                <a href="https://twitter.com" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3.5 rounded-lg transition">
-                  <X className="w-5 h-5 lg:w-7 lg:h-7" />
+                <a href="https://linkedin.com" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
+                  <Linkedin className="w-5 h-5 lg:w-7 lg:h-7" />
                 </a>
                 <a href="https://facebook.com" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
                   <Facebook className="w-5 h-5 lg:w-7 lg:h-7" />
@@ -118,8 +118,8 @@ export default function Footer() {
               </h2>
 
               <div className="flex gap-4">
-                <a href="https://twitter.com" className="bg-white/10 p-3 rounded-xl">
-                  <X className="w-6 h-6" />
+                <a href="https://linkedin.com" className="bg-white/10 p-3 rounded-xl">
+                  <Linkedin className="w-6 h-6" />
                 </a>
                 <a href="https://facebook.com" className="bg-white/10 p-3 rounded-xl">
                   <Facebook className="w-6 h-6" />
@@ -198,4 +198,4 @@ export default function Footer() {
       </footer>
     </div>
   );
-}
+}
