@@ -11,6 +11,24 @@ Currently, two official plugins are available:
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
+## Hostinger deployment
+
+This repo is a Vite + React app with an Express backend served from `server/index.js`.
+
+### Hostinger settings
+
+- Framework preset: `Other` / `Custom`
+- Root directory: `./`
+- Build command: `npm run build`
+- Output directory: `dist`
+- Start command: `npm start`
+
+### Notes
+
+- `npm start` will run the `prestart` script automatically, which builds the frontend before starting the server.
+- The app serves the built React files from `dist`, so `dist` must exist before the Node server starts.
+- If Hostinger tries to detect Next.js, override it and select a generic Node/Vite deployment.
+
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
