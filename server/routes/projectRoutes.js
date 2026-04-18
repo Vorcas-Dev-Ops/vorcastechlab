@@ -15,6 +15,8 @@ const convertToBase64 = (file) => {
 
 // @desc    Fetch all projects with pagination
 // @route   GET /api/projects?page=1&limit=12
+// @desc    Fetch all projects (metadata only - NO IMAGES)
+// @route   GET /api/projects
 // @access  Public
 router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -22,7 +24,7 @@ router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Project.findAndCountAll({
-        attributes: ['projectId', 'title', 'category', 'image'],
+        attributes: ['projectId', 'title', 'category'],
         offset,
         limit,
         order: [['createdAt', 'DESC']]
@@ -35,6 +37,37 @@ router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
         limit,
         totalPages: Math.ceil(count / limit)
     });
+}));
+
+// @desc    Fetch project image by projectId (returns actual image data, not BASE64)
+// @route   GET /api/projects/:id/image
+// @access  Public
+router.get('/:id/image', cacheResponse(300), asyncHandler(async (req, res) => {
+    const project = await Project.findOne({ 
+        attributes: ['image'],
+        where: { projectId: req.params.id } 
+    });
+    if (project && project.image) {
+        // Check if image is BASE64 data URL format
+        if (project.image.startsWith('data:')) {
+            // Extract MIME type and BASE64 data
+            const matches = project.image.match(/^data:([^;]+);base64,(.+)$/);
+            if (matches) {
+                const mimeType = matches[1];
+                const base64Data = matches[2];
+                // Convert BASE64 to binary and send as image
+                const buffer = Buffer.from(base64Data, 'base64');
+                res.type(mimeType);
+                res.set('Cache-Control', 'public, max-age=2592000'); // 30 days
+                return res.send(buffer);
+            }
+        }
+        // Fallback: return as JSON if not BASE64 format (e.g., URL string)
+        res.json({ image: project.image });
+    } else {
+        res.status(404);
+        throw new Error('Project image not found');
+    }
 }));
 
 // @desc    Fetch single project

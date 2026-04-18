@@ -24,6 +24,7 @@ export default function Projects() {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [projects, setProjects] = useState([]);
+  const [projectImages, setProjectImages] = useState({});
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,6 +33,31 @@ export default function Projects() {
   const rafRef = useRef(null);
 
   const [error, setError] = useState('');
+
+  const fetchProjectImage = async (projectId) => {
+    try {
+      const response = await fetch(`/api/projects/${projectId}/image`);
+      if (response.ok) {
+        // Handle both binary image and JSON responses
+        const contentType = response.headers.get('content-type');
+        let imageUrl;
+        
+        if (contentType && contentType.includes('image/')) {
+          // Binary image response - convert to blob URL
+          const blob = await response.blob();
+          imageUrl = URL.createObjectURL(blob);
+        } else {
+          // JSON response with BASE64 data
+          const data = await response.json();
+          imageUrl = data.image;
+        }
+        
+        setProjectImages(prev => ({ ...prev, [projectId]: imageUrl }));
+      }
+    } catch (err) {
+      console.error(`Failed to load image for project ${projectId}:`, err);
+    }
+  };
 
   const fetchProjects = async (page = 1) => {
     try {
@@ -57,6 +83,13 @@ export default function Projects() {
         
         setTotalPages(data.totalPages);
         setCurrentPage(page);
+        
+        // Fetch images for all projects
+        mapped.forEach(project => {
+          if (!projectImages[project.id]) {
+            fetchProjectImage(project.id);
+          }
+        });
         
         if (mapped.length === 0 && page === 1) {
           setError('No projects found yet.');
@@ -155,12 +188,16 @@ export default function Projects() {
                   onClick={() => navigate(`/projects/${project.id}`, { state: { project } })}
                 >
                 <div className="relative w-full aspect-video rounded-2xl md:rounded-3xl overflow-hidden mb-4 bg-white/5 shadow-lg">
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    {projectImages[project.id] ? (
+                      <img
+                        src={projectImages[project.id]}
+                        alt={project.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="w-full h-full animate-pulse bg-white/10" />
+                    )}
                   </div>
                   <div className="px-2">
                     <span className="block text-white/50 text-xs mb-1.5">{project.category}</span>
