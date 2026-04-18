@@ -156,7 +156,7 @@ export default function Projects() {
                 >
                 <div className="relative w-full aspect-video rounded-2xl md:rounded-3xl overflow-hidden mb-4 bg-white/5 shadow-lg">
                     <img
-                      src={`/api/projects/${project.id}/image`}
+                      src={project.image}
                       alt={project.title}
                       loading="lazy"
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"

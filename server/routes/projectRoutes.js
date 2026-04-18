@@ -22,7 +22,7 @@ router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Project.findAndCountAll({
-        attributes: ['projectId', 'title', 'category'],
+        attributes: ['projectId', 'title', 'category', 'image'],
         offset,
         limit,
         order: [['createdAt', 'DESC']]
@@ -47,22 +47,6 @@ router.get('/:id', cacheResponse(120), asyncHandler(async (req, res) => {
     } else {
         res.status(404);
         throw new Error('Project not found');
-    }
-}));
-
-// @desc    Fetch project image only
-// @route   GET /api/projects/:id/image
-// @access  Public
-router.get('/:id/image', cacheResponse(300), asyncHandler(async (req, res) => {
-    const project = await Project.findOne({ 
-        attributes: ['image'],
-        where: { projectId: req.params.id } 
-    });
-    if (project && project.image) {
-        res.type('text/plain').send(project.image);
-    } else {
-        res.status(404);
-        throw new Error('Project image not found');
     }
 }));
 
