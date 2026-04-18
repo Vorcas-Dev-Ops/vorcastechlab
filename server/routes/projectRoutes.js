@@ -13,14 +13,28 @@ const convertToBase64 = (file) => {
     return `data:${file.mimetype};base64,${base64}`;
 };
 
-// @desc    Fetch all projects
-// @route   GET /api/projects
+// @desc    Fetch all projects with pagination
+// @route   GET /api/projects?page=1&limit=12
 // @access  Public
 router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
-    const projects = await Project.findAll({
-        attributes: ['projectId', 'title', 'category', 'image']
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 12;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Project.findAndCountAll({
+        attributes: ['projectId', 'title', 'category'],
+        offset,
+        limit,
+        order: [['createdAt', 'DESC']]
     });
-    res.json(projects);
+
+    res.json({
+        projects: rows,
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit)
+    });
 }));
 
 // @desc    Fetch single project
@@ -36,7 +50,23 @@ router.get('/:id', cacheResponse(120), asyncHandler(async (req, res) => {
     }
 }));
 
-// @desc    Create a project (Now with Local DB Image Storage)
+// @desc    Fetch project image only
+// @route   GET /api/projects/:id/image
+// @access  Public
+router.get('/:id/image', cacheResponse(300), asyncHandler(async (req, res) => {
+    const project = await Project.findOne({ 
+        attributes: ['image'],
+        where: { projectId: req.params.id } 
+    });
+    if (project && project.image) {
+        res.type('text/plain').send(project.image);
+    } else {
+        res.status(404);
+        throw new Error('Project image not found');
+    }
+}));
+
+// @desc    Create a project (with Local DB Image Storage)
 // @route   POST /api/projects
 // @access  Private/Admin
 router.post('/', protect, admin, upload.fields([
@@ -51,7 +81,7 @@ router.post('/', protect, admin, upload.fields([
         throw new Error('Project ID already exists');
     }
 
-    let imageUrl = req.body.image; // Fallback to URL string if provided
+    let imageUrl = req.body.image;
     let detailImageUrls = req.body.images ? 
         (typeof req.body.images === 'string' ? JSON.parse(req.body.images) : req.body.images) 
         : [];
@@ -122,15 +152,14 @@ router.put('/:id', protect, admin, upload.fields([
         if (req.files['image']) {
             project.image = convertToBase64(req.files['image'][0]);
         } else if (req.body.image) {
-            project.image = req.body.image; // Assume it's a string if no file uploaded but string sent
+            project.image = req.body.image;
         }
 
         // Process Gallery Images if uploaded
         if (req.files['detailImages']) {
             project.images = req.files['detailImages'].map(file => convertToBase64(file));
         } else if (req.body.images) {
-             // Handle case where images are sent as string (e.g. from a form field)
-             project.images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
+            project.images = Array.isArray(req.body.images) ? req.body.images : JSON.parse(req.body.images);
         }
 
         const updatedProject = await project.save();

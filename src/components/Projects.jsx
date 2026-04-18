@@ -25,43 +25,56 @@ export default function Projects() {
   const [isHovered, setIsHovered] = useState(false);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(0);
   const cursorRef = useRef(null);
   const rafRef = useRef(null);
 
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch('/api/projects');
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.message || response.statusText || 'Failed to load projects');
-        }
-
-        const dynamicProjects = await response.json();
-
-        if (Array.isArray(dynamicProjects)) {
-          const mapped = dynamicProjects.map(p => ({
-            ...p,
-            id: p.projectId // Mapping backend projectId to frontend id
-          }));
-          setProjects(mapped);
-          if (mapped.length === 0) {
-            setError('No projects found yet.');
-          }
-        } else {
-          setError('Unexpected response from the projects API.');
-        }
-      } catch (renderError) {
-        console.error('Error fetching projects from backend:', renderError);
-        setError(sanitizeProjectError(renderError));
-      } finally {
-        setLoading(false);
+  const fetchProjects = async (page = 1) => {
+    try {
+      const response = await fetch(`/api/projects?page=${page}&limit=12`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || response.statusText || 'Failed to load projects');
       }
-    };
 
-    fetchProjects();
+      const data = await response.json();
+
+      if (data.projects && Array.isArray(data.projects)) {
+        const mapped = data.projects.map(p => ({
+          ...p,
+          id: p.projectId
+        }));
+        
+        if (page === 1) {
+          setProjects(mapped);
+        } else {
+          setProjects(prev => [...prev, ...mapped]);
+        }
+        
+        setTotalPages(data.totalPages);
+        setCurrentPage(page);
+        
+        if (mapped.length === 0 && page === 1) {
+          setError('No projects found yet.');
+        }
+      } else {
+        setError('Unexpected response from the projects API.');
+      }
+    } catch (renderError) {
+      console.error('Error fetching projects from backend:', renderError);
+      setError(sanitizeProjectError(renderError));
+    } finally {
+      setLoading(false);
+      setLoadingMore(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects(1);
 
     const handleMouseMove = (e) => {
       if (rafRef.current) {
@@ -82,6 +95,13 @@ export default function Projects() {
       }
     };
   }, []);
+
+  const handleLoadMore = () => {
+    if (currentPage < totalPages && !loadingMore) {
+      setLoadingMore(true);
+      fetchProjects(currentPage + 1);
+    }
+  };
 
   return (
     <div id="projects" className="w-full bg-black text-white pt-20 md:pt-28 pb-12 md:pb-16 px-6 md:px-12 scroll-mt-24">
@@ -124,30 +144,44 @@ export default function Projects() {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
-            {projects.map((project) => (
-              <div
-                key={project.id}
-                className="group cursor-none flex flex-col mx-auto w-full max-w-[450px] sm:max-w-none"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                onClick={() => navigate(`/projects/${project.id}`, { state: { project } })}
-              >
+          <>
+            <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 lg:gap-10">
+              {projects.map((project) => (
+                <div
+                  key={project.id}
+                  className="group cursor-none flex flex-col mx-auto w-full max-w-[450px] sm:max-w-none"
+                  onMouseEnter={() => setIsHovered(true)}
+                  onMouseLeave={() => setIsHovered(false)}
+                  onClick={() => navigate(`/projects/${project.id}`, { state: { project } })}
+                >
                 <div className="relative w-full aspect-video rounded-2xl md:rounded-3xl overflow-hidden mb-4 bg-white/5 shadow-lg">
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
+                    <img
+                      src={`/api/projects/${project.id}/image`}
+                      alt={project.title}
+                      loading="lazy"
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="px-2">
+                    <span className="block text-white/50 text-xs mb-1.5">{project.category}</span>
+                    <h3 className="text-lg md:text-xl font-bold transition-colors group-hover:text-orange-500">{project.title}</h3>
+                  </div>
                 </div>
-                <div className="px-2">
-                  <span className="block text-white/50 text-xs mb-1.5">{project.category}</span>
-                  <h3 className="text-lg md:text-xl font-bold transition-colors group-hover:text-orange-500">{project.title}</h3>
-                </div>
+              ))}
+            </div>
+            
+            {currentPage < totalPages && (
+              <div className="flex justify-center mt-12">
+                <button
+                  onClick={handleLoadMore}
+                  disabled={loadingMore}
+                  className="px-8 py-3 rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loadingMore ? 'Loading...' : 'Load More Projects'}
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

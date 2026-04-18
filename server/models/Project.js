@@ -5,7 +5,8 @@ const Project = sequelize.define('Project', {
     projectId: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
+        index: true
     },
     title: {
         type: DataTypes.STRING,
@@ -13,7 +14,8 @@ const Project = sequelize.define('Project', {
     },
     category: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        index: true
     },
     image: {
         type: DataTypes.TEXT,
