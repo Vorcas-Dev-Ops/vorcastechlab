@@ -13,11 +13,18 @@ const Contact = () => {
   });
 
   const services = [
+    { id: 'ui-ux', label: 'UX/UI Design' },
     { id: 'web-development', label: 'Web Development' },
-    { id: 'mobile-apps', label: 'Mobile Application' },
+    { id: 'mobile-apps', label: 'App Solutions' },
+    { id: 'digital-marketing', label: 'Digital Marketing' },
+    { id: 'custom-software', label: 'Custom Software' },
+    { id: 'ai-automation', label: 'AI & Automation' },
     { id: 'e-commerce', label: 'E-Commerce Store' },
-    { id: 'ui-ux', label: 'UI/UX Brand Design' },
-    { id: 'consultation', label: 'Technical Consultation' }
+    { id: 'cloud-solutions', label: 'Cloud Solutions' },
+    { id: 'cybersecurity', label: 'Cybersecurity' },
+    { id: 'qa-testing', label: 'Quality Assurance' },
+    { id: 'tech-consultation', label: 'Technical Consultation' },
+    { id: 'brand-identity', label: 'Brand Identity' }
   ];
 
 
@@ -90,7 +97,7 @@ const Contact = () => {
             <div className="space-y-3">
               {[
                 { icon: <Mail size={16} />, label: "Email Us", val: "support@vorcastechlab.com", link: "mailto:support@vorcastechlab.com" },
-                { icon: <Phone size={16} />, label: "Call Us", val: "+91 8123139994", link: "tel:+91 8123139994" },
+                { icon: <Phone size={16} />, label: "Call Us", val: "+91 81231 39994", link: "tel:+918123139994" },
                 { icon: <MapPin size={16} />, label: "Visit Us", val: "2nd Floor, Plot No-29, Thambu Chetty Palya Main Rd, Akshaya Nagar 1st Block, Akshaya Nagar, Ramamurthy Nagar, Bengaluru, Karnataka 560016", link: "#" }
               ].map((item, idx) => (
                 <a
@@ -171,7 +178,7 @@ const Contact = () => {
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          placeholder="hello@world.com"
+                          placeholder="support@vorcastechlab.com"
                           className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.08] transition-all"
                         />
                       </div>
@@ -187,7 +194,7 @@ const Contact = () => {
                           value={formData.phone}
                           onChange={handleChange}
                           required
-                          placeholder="+1 (000) 000-0000"
+                          placeholder="+91 00000 00000"
                           className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.08] transition-all"
                         />
                       </div>
@@ -210,8 +217,7 @@ const Contact = () => {
 
                       {/* Custom Dropdown Menu with hidden scrollbar */}
                       {isOpen && (
-                        <div className="absolute top-full left-0 w-full mt-2 bg-[#0d0d0d] border border-white/10 rounded-xl py-2 z-50 shadow-2xl max-h-56 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200"
-                          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                        <div className="absolute top-full left-0 w-full mt-2 bg-[#0d0d0d] border border-white/10 rounded-xl py-2 z-50 shadow-2xl max-h-56 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-200 custom-scrollbar">
                           <div className="flex flex-col">
 
                             {services.map((s) => (

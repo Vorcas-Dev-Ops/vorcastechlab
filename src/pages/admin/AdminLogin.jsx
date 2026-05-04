@@ -97,7 +97,7 @@ const AdminLogin = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-orange-500 focus:bg-white/[0.08] transition-all text-sm"
-                                placeholder="name@vorcas.com"
+                                placeholder="name@vorcastechlab.com"
                             />
                         </div>
                     </div>

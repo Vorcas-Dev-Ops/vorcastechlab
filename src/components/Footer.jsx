@@ -12,7 +12,7 @@ const fadeUp = {
     transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
   }),
 };
-
+ 
 const bigTextVariant = {
   hidden: { y: "105%", opacity: 0 },
   visible: {
@@ -49,13 +49,13 @@ export default function Footer() {
               </h2>
 
               <div className="flex gap-4 lg:gap-6 mt-0">
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
+                <a href="https://www.linkedin.com/company/vorcas-tech-lab/" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
                   <Linkedin className="w-5 h-5 lg:w-7 lg:h-7" />
                 </a>
                 <a href="https://facebook.com" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
                   <Facebook className="w-5 h-5 lg:w-7 lg:h-7" />
                 </a>
-                <a href="https://instagram.com" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
+                <a href="https://www.instagram.com/vorcas.tech.lab/" className="bg-white/10 hover:bg-white/20 p-2.5 lg:p-3 rounded-lg transition">
                   <Instagram className="w-5 h-5 lg:w-7 lg:h-7" />
                 </a>
               </div>
@@ -118,13 +118,13 @@ export default function Footer() {
               </h2>
 
               <div className="flex gap-4">
-                <a href="https://linkedin.com" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn" className="bg-white/10 p-3 rounded-xl">
+                <a href="https://www.linkedin.com/company/vorcas-tech-lab/" target="_blank" rel="noreferrer noopener" aria-label="LinkedIn" className="bg-white/10 p-3 rounded-xl">
                   <Linkedin className="w-6 h-6" />
                 </a>
                 <a href="https://facebook.com" className="bg-white/10 p-3 rounded-xl">
                   <Facebook className="w-6 h-6" />
                 </a>
-                <a href="https://instagram.com" className="bg-white/10 p-3 rounded-xl">
+                <a href="https://www.instagram.com/vorcas.tech.lab/" className="bg-white/10 p-3 rounded-xl">
                   <Instagram className="w-6 h-6" />
                 </a>
               </div>

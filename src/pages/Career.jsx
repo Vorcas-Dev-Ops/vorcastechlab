@@ -145,8 +145,8 @@ const Career = () => {
                     <p className="text-white/60 mb-8 mx-auto max-w-lg">
                         We’re always on the hunt for top talent. If you have a passion for high-end digital design and engineering, send us your portfolio anyway.
                     </p>
-                    <a href="mailto:careers@vorcastechlab.com" className="inline-flex items-center gap-2 text-orange-500 font-bold hover:underline">
-                        careers@vorcastechlab.com <Briefcase size={16} />
+                    <a href="mailto:support@vorcastechlab.com" className="inline-flex items-center gap-2 text-orange-500 font-bold hover:underline">
+                        support@vorcastechlab.com <Briefcase size={16} />
                     </a>
                 </div>
             </div>

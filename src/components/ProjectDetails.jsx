@@ -32,7 +32,7 @@ const projectDetails = {
     ],
     description: `A stunning premium web experience crafted to perfection.`,
     approach: `This project focuses on visual storytelling and dynamic motion to create an unforgettable user experience that converts and engages.`,
-    siteUrl: 'https://vorcas.com'
+    siteUrl: 'https://vorcastechlab.com'
   }
 };
 
