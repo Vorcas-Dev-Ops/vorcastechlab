@@ -92,7 +92,7 @@ const ServiceCard = ({ service }) => (
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.2em] mb-3">Capabilities</p>
+          <p className="text-white/50 text-[9px] font-black uppercase tracking-[0.2em] mb-3">Capabilities</p>
           <ul className="grid grid-cols-1 gap-y-2">
             {service.services.slice(0, 4).map((s, i) => (
               <li key={i} className="flex items-center gap-2 text-[11px] text-white/90 font-semibold">
@@ -103,7 +103,7 @@ const ServiceCard = ({ service }) => (
           </ul>
         </div>
         <div>
-          <p className="text-white/20 text-[9px] font-black uppercase tracking-[0.2em] mb-3">Tech Stack</p>
+          <p className="text-white/50 text-[9px] font-black uppercase tracking-[0.2em] mb-3">Tech Stack</p>
           <div className="flex flex-wrap gap-3 text-xl text-white/60">
             {service.tools.map((tool, i) => (
               <div key={i} className="hover:text-orange-400 transition-colors duration-300">{tool}</div>
@@ -221,7 +221,7 @@ const MobileServicesCarousel = () => {
       </div>
 
       {/* Card counter */}
-      <p className="text-center text-white/20 text-xs mt-3 font-mono tracking-widest">
+      <p className="text-center text-white/40 text-xs mt-3 font-mono tracking-widest">
         {String(current + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}
       </p>
     </div>
@@ -299,7 +299,7 @@ const Services = () => {
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-auto">
                       <div>
-                        <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Capabilities</p>
+                        <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Capabilities</p>
                         <ul className="grid grid-cols-1 gap-y-2.5">
                           {service.services.slice(0, 4).map((s, i) => (
                             <li key={i} className="flex items-center gap-2 text-[11px] lg:text-[15px] text-white/90 font-semibold whitespace-nowrap">
@@ -310,7 +310,7 @@ const Services = () => {
                         </ul>
                       </div>
                       <div>
-                        <p className="text-white/20 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Tech Stack</p>
+                        <p className="text-white/50 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Tech Stack</p>
                         <div className="flex flex-wrap gap-3 lg:gap-4 text-xl lg:text-3xl text-white/60">
                           {service.tools.map((tool, i) => (
                             <div key={i} className="hover:text-orange-400 hover:scale-110 transition-all duration-300">

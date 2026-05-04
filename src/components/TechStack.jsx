@@ -83,7 +83,7 @@ const TechCard = ({ t }) => (
       {t.icon}
     </div>
     
-    <p className="text-zinc-500 group-hover:text-white font-black text-[9px] md:text-[10px] uppercase tracking-[0.3em] relative z-10 transition-colors duration-500 opacity-60 group-hover:opacity-100">
+    <p className="text-zinc-300 group-hover:text-white font-black text-[9px] md:text-[10px] uppercase tracking-[0.3em] relative z-10 transition-colors duration-500 group-hover:opacity-100">
       {t.name}
     </p>
   </motion.div>

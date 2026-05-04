@@ -109,7 +109,7 @@ const Contact = () => {
                     {item.icon}
                   </div>
                   <div>
-                    <span className="block text-[9px] uppercase font-bold text-white/20 tracking-widest leading-none mb-1">{item.label}</span>
+                    <span className="block text-[9px] uppercase font-bold text-white/50 tracking-widest leading-none mb-1">{item.label}</span>
                     <span className="block text-[13px] font-medium text-white/80 group-hover:text-white transition-colors">{item.val}</span>
                   </div>
                 </a>
@@ -153,7 +153,7 @@ const Contact = () => {
                       </div>
                     )}
                     <div className="space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Your Name</label>
+                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Your Name</label>
                       <div className="relative group/input">
                         <User size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <input
@@ -169,7 +169,7 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Email Address</label>
+                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Email Address</label>
                       <div className="relative group/input">
                         <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <input
@@ -185,7 +185,7 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Phone Number</label>
+                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Phone Number</label>
                       <div className="relative group/input">
                         <Phone size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <input
@@ -201,7 +201,7 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-1.5 relative">
-                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Service Type</label>
+                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Service Type</label>
                       <div
                         onClick={() => setIsOpen(!isOpen)}
                         className="relative group/input cursor-pointer"
@@ -242,7 +242,7 @@ const Contact = () => {
 
 
                     <div className="md:col-span-2 space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Project Details</label>
+                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Project Details</label>
                       <div className="relative group/input">
                         <MessageSquare size={14} className="absolute left-4 top-4 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <textarea
