@@ -29,7 +29,7 @@ const Hero = () => {
           </div>
         </div>
  
-        <h1 className="text-[clamp(2.5rem,4vw,5.5rem)] lg:text-[clamp(2.5rem,5vw,6.5rem)] font-bold tracking-tight mb-6 leading-[1.1] reveal-up delay-100">
+        <h1 className="text-[clamp(2.5rem,4vw,5.5rem)] lg:text-[clamp(2.5rem,5vw,6.5rem)] font-bold tracking-tight mb-6 leading-[1.1] reveal-up delay-100 min-h-[120px] md:min-h-0">
           Engineering the Future of <br />
           <span className="bg-gradient-to-r from-white via-white to-white/40 bg-clip-text text-transparent">
             Digital Innovation.

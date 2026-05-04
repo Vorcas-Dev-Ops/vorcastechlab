@@ -138,6 +138,12 @@ const startServer = async () => {
     if (req.path.startsWith('/api')) {
       return next();
     }
+
+    // If the request looks like a file (has an extension) but wasn't found by express.static
+    // we should return a 404 instead of index.html to prevent MIME type errors.
+    if (path.extname(req.path)) {
+      return res.status(404).end();
+    }
     
     // For all other routes, try to serve index.html
     if (!indexExists) {
