@@ -84,12 +84,13 @@ export default function Projects() {
         setTotalPages(data.totalPages);
         setCurrentPage(page);
         
-        // Fetch images for all projects
-        mapped.forEach(project => {
+        // Fetch images for all projects in parallel
+        await Promise.all(mapped.map(project => {
           if (!projectImages[project.id]) {
-            fetchProjectImage(project.id);
+            return fetchProjectImage(project.id);
           }
-        });
+          return Promise.resolve();
+        }));
         
         if (mapped.length === 0 && page === 1) {
           setError('No projects found yet.');
