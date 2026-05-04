@@ -10,16 +10,20 @@ router.post('/', async (req, res) => {
     // Create a generic SMTP transport with environment variables
     const transporter = nodemailer.createTransport({
       host: process.env.MAIL_HOST || 'smtp.gmail.com',
-      port: process.env.MAIL_PORT || 465,
-      secure: true, // true for port 465, false for other ports
+      port: parseInt(process.env.MAIL_PORT) || 465,
+      secure: true, 
       auth: {
         user: process.env.MAIL_USER || 'support@vorcastechlab.com',
         pass: process.env.MAIL_PASS 
+      },
+      tls: {
+        rejectUnauthorized: false
       }
     });
 
     const mailOptions = {
-      from: email,
+      from: process.env.MAIL_USER || 'support@vorcastechlab.com',
+      replyTo: email,
       to: 'support@vorcastechlab.com',
       subject: `New Project Request - ${service}`,
       text: `
