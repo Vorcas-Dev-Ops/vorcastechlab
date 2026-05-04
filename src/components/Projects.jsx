@@ -158,7 +158,7 @@ export default function Projects() {
 
       <div className="max-w-5xl mx-auto">
         <div className="mb-8 md:mb-12 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-bold mb-3">Projects</h1>
+          <h2 className="text-3xl md:text-4xl font-bold mb-3">Projects</h2>
           <p className="text-white/60 text-[0.95rem] md:text-base max-w-xl mx-auto md:mx-0">
             A showcase of our premium projects. Minimalist aesthetics and high end execution.
           </p>

@@ -11,7 +11,8 @@ const Particles = () => {
     let animationFrameId;
 
     let particles = [];
-    const particleCount = 100;
+    const isMobile = window.innerWidth < 768;
+    const particleCount = isMobile ? 40 : 100;
 
     const resize = () => {
       canvas.width = window.innerWidth;

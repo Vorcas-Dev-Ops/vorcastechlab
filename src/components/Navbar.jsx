@@ -232,6 +232,7 @@ export default function Navbar() {
           <button
             className="md:hidden p-2 text-white"
             onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
             {mobileOpen ? <X size={26} /> : <Menu size={26} />}
           </button>

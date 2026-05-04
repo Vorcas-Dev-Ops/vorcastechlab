@@ -5,17 +5,22 @@ import { motion } from 'framer-motion';
 
 
 import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import TechStack from './components/TechStack';
-import Team from './components/Team';
-import Testimonials from './components/Testimonials';
-import Contact from './components/Contact';
-import Footer from './components/Footer';
-import Projects from './components/Projects';
-import ProjectDetails from './components/ProjectDetails';
 import Navbar from './components/Navbar';
-import NotFound from './components/NotFound';
+import Footer from './components/Footer';
+
+// Lazy load non-critical sections
+const About = React.lazy(() => import('./components/About'));
+const Services = React.lazy(() => import('./components/Services'));
+const TechStack = React.lazy(() => import('./components/TechStack'));
+const Team = React.lazy(() => import('./components/Team'));
+const Testimonials = React.lazy(() => import('./components/Testimonials'));
+const Contact = React.lazy(() => import('./components/Contact'));
+const Projects = React.lazy(() => import('./components/Projects'));
+const ProjectDetails = React.lazy(() => import('./components/ProjectDetails'));
+const Career = React.lazy(() => import('./pages/Career'));
+const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
+const AdminDashboard = React.lazy(() => import('./pages/admin/AdminDashboard'));
+const NotFound = React.lazy(() => import('./components/NotFound'));
 // Scroll Management Component
 const ScrollHandler = ({ aboutBoxRef, aboutSectionRef, aboutBgTextRef, teamGridRef, teamBgTextRef }) => {
   const { pathname } = useLocation();
@@ -129,9 +134,9 @@ const ScrollHandler = ({ aboutBoxRef, aboutSectionRef, aboutBgTextRef, teamGridR
   return null;
 };
 
-import Career from './pages/Career';
-import AdminLogin from './pages/admin/AdminLogin';
-import AdminDashboard from './pages/admin/AdminDashboard';
+import { HelmetProvider } from 'react-helmet-async';
+import SEO from './components/SEO';
+
 const AppContent = () => {
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -155,6 +160,7 @@ const AppContent = () => {
 
   return (
     <div className="text-text-primary min-h-screen selection:bg-orange-500 selection:text-white relative">
+      <SEO />
       <ScrollHandler
         aboutBoxRef={aboutBoxRef}
         aboutSectionRef={aboutSectionRef}
@@ -176,26 +182,27 @@ const AppContent = () => {
           <Route path="/" element={
             <>
               <Hero />
-              <Services />
-              <About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} />
-
-              <Projects />
-              <TechStack />
-              <Contact />
+              <React.Suspense fallback={<div className="h-20" />}>
+                <Services />
+                <About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} />
+                <Projects />
+                <TechStack />
+                <Contact />
+              </React.Suspense>
             </>
           } />
-          <Route path="/about" element={<About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/techstack" element={<TechStack />} />
-          <Route path="/team" element={<Team teamGridRef={teamGridRef} teamBgTextRef={teamBgTextRef} />} />
-          <Route path="/thoughts" element={<Testimonials />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/projects/:id" element={<ProjectDetails />} />
-          <Route path="/career" element={<Career />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="*" element={<NotFound />} />
+          <Route path="/about" element={<React.Suspense fallback={<div className="h-screen" />}><About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} /></React.Suspense>} />
+          <Route path="/services" element={<React.Suspense fallback={<div className="h-screen" />}><Services /></React.Suspense>} />
+          <Route path="/techstack" element={<React.Suspense fallback={<div className="h-screen" />}><TechStack /></React.Suspense>} />
+          <Route path="/team" element={<React.Suspense fallback={<div className="h-screen" />}><Team teamGridRef={teamGridRef} teamBgTextRef={teamBgTextRef} /></React.Suspense>} />
+          <Route path="/thoughts" element={<React.Suspense fallback={<div className="h-screen" />}><Testimonials /></React.Suspense>} />
+          <Route path="/contact" element={<React.Suspense fallback={<div className="h-screen" />}><Contact /></React.Suspense>} />
+          <Route path="/projects" element={<React.Suspense fallback={<div className="h-screen" />}><Projects /></React.Suspense>} />
+          <Route path="/projects/:id" element={<React.Suspense fallback={<div className="h-screen" />}><ProjectDetails /></React.Suspense>} />
+          <Route path="/career" element={<React.Suspense fallback={<div className="h-screen" />}><Career /></React.Suspense>} />
+          <Route path="/admin/login" element={<React.Suspense fallback={<div className="h-screen" />}><AdminLogin /></React.Suspense>} />
+          <Route path="/admin/dashboard" element={<React.Suspense fallback={<div className="h-screen" />}><AdminDashboard /></React.Suspense>} />
+          <Route path="*" element={<React.Suspense fallback={<div className="h-screen" />}><NotFound /></React.Suspense>} />
         </Routes>
       </main>
 
@@ -206,9 +213,11 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <HelmetProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </HelmetProvider>
   );
 }
 

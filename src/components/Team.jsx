@@ -33,7 +33,7 @@ const Team = ({ teamGridRef, teamBgTextRef }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-20" id="teamGrid" ref={teamGridRef}>
           {team.map((member, idx) => (
             <div key={idx} className="team-member relative h-[480px] bg-surface overflow-hidden reveal-up">
-              <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-transform duration-[0.8s] hover:scale-110" />
+              <img src={member.img} alt={member.name} loading="lazy" className="w-full h-full object-cover transition-transform duration-[0.8s] hover:scale-110" />
               <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/95 via-black/50 to-transparent text-center z-[2]">
                 <h3 className="m-0 mb-1 text-[1.25rem] font-bold text-white">{member.name}</h3>
                 <p className="m-0 text-[0.85rem] text-text-secondary">{member.role}</p>
