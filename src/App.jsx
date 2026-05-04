@@ -9,13 +9,15 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
 // Lazy load non-critical sections
-const About = React.lazy(() => import('./components/About'));
-const Services = React.lazy(() => import('./components/Services'));
-const TechStack = React.lazy(() => import('./components/TechStack'));
+import About from './components/About';
+import Services from './components/Services';
+import TechStack from './components/TechStack';
+import Contact from './components/Contact';
+import Projects from './components/Projects';
+
+// Lazy load non-critical pages
 const Team = React.lazy(() => import('./components/Team'));
 const Testimonials = React.lazy(() => import('./components/Testimonials'));
-const Contact = React.lazy(() => import('./components/Contact'));
-const Projects = React.lazy(() => import('./components/Projects'));
 const ProjectDetails = React.lazy(() => import('./components/ProjectDetails'));
 const Career = React.lazy(() => import('./pages/Career'));
 const AdminLogin = React.lazy(() => import('./pages/admin/AdminLogin'));
@@ -182,22 +184,20 @@ const AppContent = () => {
           <Route path="/" element={
             <>
               <Hero />
-              <React.Suspense fallback={<div className="h-20" />}>
-                <Services />
-                <About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} />
-                <Projects />
-                <TechStack />
-                <Contact />
-              </React.Suspense>
+              <Services />
+              <About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} />
+              <Projects />
+              <TechStack />
+              <Contact />
             </>
           } />
-          <Route path="/about" element={<React.Suspense fallback={<div className="h-screen" />}><About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} /></React.Suspense>} />
-          <Route path="/services" element={<React.Suspense fallback={<div className="h-screen" />}><Services /></React.Suspense>} />
-          <Route path="/techstack" element={<React.Suspense fallback={<div className="h-screen" />}><TechStack /></React.Suspense>} />
+          <Route path="/about" element={<About aboutBoxRef={aboutBoxRef} aboutSectionRef={aboutSectionRef} aboutBgTextRef={aboutBgTextRef} />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/techstack" element={<TechStack />} />
           <Route path="/team" element={<React.Suspense fallback={<div className="h-screen" />}><Team teamGridRef={teamGridRef} teamBgTextRef={teamBgTextRef} /></React.Suspense>} />
           <Route path="/thoughts" element={<React.Suspense fallback={<div className="h-screen" />}><Testimonials /></React.Suspense>} />
-          <Route path="/contact" element={<React.Suspense fallback={<div className="h-screen" />}><Contact /></React.Suspense>} />
-          <Route path="/projects" element={<React.Suspense fallback={<div className="h-screen" />}><Projects /></React.Suspense>} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/projects" element={<Projects />} />
           <Route path="/projects/:id" element={<React.Suspense fallback={<div className="h-screen" />}><ProjectDetails /></React.Suspense>} />
           <Route path="/career" element={<React.Suspense fallback={<div className="h-screen" />}><Career /></React.Suspense>} />
           <Route path="/admin/login" element={<React.Suspense fallback={<div className="h-screen" />}><AdminLogin /></React.Suspense>} />
