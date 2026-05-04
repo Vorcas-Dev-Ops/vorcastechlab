@@ -28,7 +28,7 @@ export default function Footer() {
   const inView = useInView(footerRef, { once: false, amount: 0.1 });
 
   return (
-    <div className="sticky bottom-0 z-10 w-full overflow-hidden pointer-events-auto">
+    <div className="relative md:sticky bottom-0 z-10 w-full overflow-hidden pointer-events-auto">
       <footer 
         ref={footerRef}
         className="relative bg-orange-600 text-white pt-8 sm:pt-16 pb-4 sm:pb-6 px-6 md:px-12 lg:px-24 flex flex-col min-h-fit sm:min-h-[50vh] justify-between"

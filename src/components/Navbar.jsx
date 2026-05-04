@@ -188,8 +188,20 @@ export default function Navbar() {
             : "bg-transparent py-4 px-6 md:px-8 lg:px-12 max-w-[1400px] mx-auto border border-transparent"
             }`}
         >
-          <div className={`flex items-center cursor-pointer transition-all duration-300 ${isScrolled ? "gap-2" : "gap-3"}`} onClick={goToHero}>
-            <img src={logo} alt="logo" className={`transition-all duration-300 object-contain ${isScrolled ? "w-8 h-10 mt-0" : "w-11 h-13 mt-1"}`} />
+          <div 
+            className={`flex items-center cursor-pointer transition-all duration-300 ${isScrolled ? "gap-2" : "gap-3"}`} 
+            onClick={goToHero}
+            aria-label="Back to top"
+            role="button"
+          >
+            <img 
+              src={logo} 
+              alt="Vorcas TechLab Logo" 
+              width="44" 
+              height="52" 
+              fetchpriority="high"
+              className={`transition-all duration-300 object-contain ${isScrolled ? "w-8 h-10 mt-0" : "w-11 h-13 mt-1"}`} 
+            />
             <span className={`font-bold text-white whitespace-nowrap transition-all duration-300 ${isScrolled ? "text-lg md:text-base lg:text-lg" : "text-xl lg:text-xl md:text-lg"}`}>Vorcas Tech<span className="text-orange-500">Lab</span></span>
           </div>
 

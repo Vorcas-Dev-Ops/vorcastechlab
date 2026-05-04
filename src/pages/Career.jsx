@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Briefcase, MapPin, Clock } from 'lucide-react';
+import SEO from '../components/SEO';
 
 const Career = () => {
     const [jobs, setJobs] = useState([]);
@@ -33,6 +34,11 @@ const Career = () => {
 
     return (
         <div className="min-h-screen bg-black text-white pt-32 pb-20 px-6 md:px-12">
+            <SEO 
+                title="Careers" 
+                description="Join the Vorcas TechLab team. We're looking for bold minds and meticulous craftsmen to help us push the boundaries of digital excellence."
+                keywords="careers, jobs, hire, web developer jobs, design jobs, Vorcas TechLab careers"
+            />
             <div className="max-w-6xl mx-auto">
                 <header className="mb-20 text-center">
                     <motion.div
