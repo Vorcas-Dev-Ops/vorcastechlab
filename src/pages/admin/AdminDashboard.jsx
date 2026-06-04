@@ -118,7 +118,7 @@ const ProjectsManager = ({ token }) => {
         setLoadingProjects(true);
         try {
             const { data } = await axios.get('/api/projects');
-            setProjects(data);
+            setProjects(data.projects);
         } catch (error) {
             console.error(error);
         } finally {

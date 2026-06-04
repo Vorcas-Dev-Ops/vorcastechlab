@@ -15,7 +15,7 @@ const convertToBase64 = (file) => {
 
 // @desc    Fetch all projects with pagination
 // @route   GET /api/projects?page=1&limit=12
-// @desc    Fetch all projects (metadata only - NO IMAGES)
+// @desc    Fetch all projects (with images)
 // @route   GET /api/projects
 // @access  Public
 router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
@@ -24,7 +24,7 @@ router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Project.findAndCountAll({
-        attributes: ['projectId', 'title', 'category'],
+        attributes: ['projectId', 'title', 'category', 'image'],
         offset,
         limit,
         order: [['createdAt', 'DESC']]
