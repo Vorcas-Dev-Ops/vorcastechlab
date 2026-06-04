@@ -27,7 +27,18 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/\/api\//],
         runtimeCaching: [
+          {
+            urlPattern: /\/api\//i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 5 },
+              networkTimeoutSeconds: 10,
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
