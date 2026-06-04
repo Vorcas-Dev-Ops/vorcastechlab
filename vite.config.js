@@ -9,7 +9,6 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      selfDestroying: true,
       includeAssets: ['Vorcaslogo.png', 'vite.svg'],
       manifest: {
         name: 'Vorcas TechLab - Innovative & Timeless Design',

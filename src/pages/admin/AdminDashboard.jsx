@@ -235,8 +235,14 @@ const ProjectsManager = ({ token }) => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete project?')) {
-            await axios.delete(`/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-            fetchProjects();
+            try {
+                await axios.delete(`/api/projects/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+                fetchProjects();
+            } catch (error) {
+                const msg = error?.response?.data?.message || error.message || 'Delete failed';
+                alert(`Delete Error: ${msg}`);
+                console.error(error);
+            }
         }
     };
 
@@ -461,8 +467,14 @@ const CareersManager = ({ token }) => {
 
     const handleDelete = async (id) => {
         if (window.confirm('Delete job?')) {
-            await axios.delete(`/api/careers/${id}`, { headers: { Authorization: `Bearer ${token}` } });
-            fetchCareers();
+            try {
+                await axios.delete(`/api/careers/${id}`, { headers: { Authorization: `Bearer ${token}` } });
+                fetchCareers();
+            } catch (error) {
+                const msg = error?.response?.data?.message || error.message || 'Delete failed';
+                alert(`Delete Error: ${msg}`);
+                console.error(error);
+            }
         }
     };
 
