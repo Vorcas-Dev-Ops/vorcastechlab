@@ -70,7 +70,9 @@ export default function Projects() {
       const data = await response.json();
 
       if (data.projects && Array.isArray(data.projects)) {
-        const mapped = data.projects.map(p => ({
+        const mapped = data.projects
+          .filter(p => p.projectId !== 'look@me')
+          .map(p => ({
           ...p,
           id: p.projectId
         }));

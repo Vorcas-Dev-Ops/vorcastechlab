@@ -90,8 +90,8 @@
         50% { opacity: 0.8; transform: scale(1.05); }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-BhOis3Ae.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-JcKrCDU1.css">
+    <script type="module" crossorigin src="/assets/index-Du-n4Ms3.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-H5UJZ73r.css">
   <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
   <body>
     <div id="root">
@@ -106,16 +106,23 @@
       </div>
     </div>
     <script>
-      // Remove preloader once React has mounted and DOM is ready
-      window.addEventListener('load', () => {
-        const root = document.getElementById('root');
-        const preloader = root?.querySelector('.preloader');
+      // Remove preloader immediately once DOM is parsed (don't wait for images)
+      document.addEventListener('DOMContentLoaded', function() {
+        var preloader = document.querySelector('.preloader');
         if (preloader) {
-          preloader.style.transition = 'opacity 0.4s ease';
+          preloader.style.transition = 'opacity 0.3s ease';
           preloader.style.opacity = '0';
-          setTimeout(() => preloader.remove(), 500);
+          setTimeout(function() { preloader.remove(); }, 300);
         }
       });
+      // Fallback: hide preloader after 3s even if DOMContentLoaded doesn't fire
+      setTimeout(function() {
+        var preloader = document.querySelector('.preloader');
+        if (preloader) {
+          preloader.style.opacity = '0';
+          setTimeout(function() { preloader.remove(); }, 300);
+        }
+      }, 3000);
     </script>
   </body>
 </html>

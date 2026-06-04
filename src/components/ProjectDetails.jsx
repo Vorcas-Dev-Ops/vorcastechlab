@@ -3,6 +3,8 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import SEO from './SEO';
 
+const EXCLUDED_PROJECTS = ['look@me'];
+
 const projectDetails = {
   rently: {
     title: 'Rently - Real Estate Website',
@@ -34,12 +36,9 @@ const projectDetails = {
   }
 };
 
-function useRevealAnimation() {
-  const initialized = useRef(false);
-
+function useRevealAnimation(active) {
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
+    if (!active) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -56,7 +55,7 @@ function useRevealAnimation() {
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+  }, [active]);
 }
 
 export default function ProjectDetails() {
@@ -68,16 +67,22 @@ export default function ProjectDetails() {
     routeStateProject.description || routeStateProject.approach || routeStateProject.problem || routeStateProject.solution ||
     (Array.isArray(routeStateProject.images) && routeStateProject.images.length > 0)
   );
-  const initialData = projectDetails[id] ?? (hasFullRouteState ? routeStateProject : null);
+  const initialData = EXCLUDED_PROJECTS.includes(id) ? null : (projectDetails[id] ?? (hasFullRouteState ? routeStateProject : null));
 
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(initialData ? false : true);
   const [notFound, setNotFound] = useState(false);
 
-  useRevealAnimation();
+  useRevealAnimation(!loading && !!data);
 
   useEffect(() => {
     const getProject = async () => {
+      if (EXCLUDED_PROJECTS.includes(id)) {
+        setNotFound(true);
+        setLoading(false);
+        return;
+      }
+
       if (projectDetails[id]) {
         setData(projectDetails[id]);
         setLoading(false);
