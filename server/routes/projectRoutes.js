@@ -24,7 +24,7 @@ router.get('/', cacheResponse(120), asyncHandler(async (req, res) => {
     const offset = (page - 1) * limit;
 
     const { count, rows } = await Project.findAndCountAll({
-        attributes: ['projectId', 'title', 'category', 'image'],
+        attributes: ['projectId', 'title', 'category'],
         offset,
         limit,
         order: [['createdAt', 'DESC']]

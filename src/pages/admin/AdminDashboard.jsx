@@ -206,30 +206,36 @@ const ProjectsManager = ({ token }) => {
         } finally { setUploading(false); }
     };
 
-    const handleEdit = (project) => {
+    const handleEdit = async (project) => {
         setIsEditing(true);
         setEditingId(project.projectId);
-        setFormData({
-            projectId: project.projectId,
-            title: project.title,
-            category: project.category,
-            client: project.client || '',
-            duration: project.duration || '',
-            description: project.description,
-            approach: project.approach,
-            problem: project.problem || '',
-            solution: project.solution || '',
-            sectionsConfig: project.sectionsConfig || [
-                { id: 'description', enabled: true, label: 'Description' },
-                { id: 'problem', enabled: false, label: 'Problem Statement' },
-                { id: 'solution', enabled: false, label: 'The Solution' },
-                { id: 'approach', enabled: true, label: 'Our Approach' }
-            ],
-            siteUrl: project.siteUrl || '',
-            showGalleryFirst: project.showGalleryFirst !== undefined ? project.showGalleryFirst : true
-        });
-        setMainImagePreview(project.image);
-        setDetailImagesPreviews(project.images || []);
+        // Fetch full project details (includes images)
+        try {
+            const { data } = await axios.get(`/api/projects/${project.projectId}`);
+            setFormData({
+                projectId: data.projectId,
+                title: data.title,
+                category: data.category,
+                client: data.client || '',
+                duration: data.duration || '',
+                description: data.description,
+                approach: data.approach,
+                problem: data.problem || '',
+                solution: data.solution || '',
+                sectionsConfig: data.sectionsConfig || [
+                    { id: 'description', enabled: true, label: 'Description' },
+                    { id: 'problem', enabled: false, label: 'Problem Statement' },
+                    { id: 'solution', enabled: false, label: 'The Solution' },
+                    { id: 'approach', enabled: true, label: 'Our Approach' }
+                ],
+                siteUrl: data.siteUrl || '',
+                showGalleryFirst: data.showGalleryFirst !== undefined ? data.showGalleryFirst : true
+            });
+            setMainImagePreview(data.image);
+            setDetailImagesPreviews(data.images || []);
+        } catch (err) {
+            console.error('Failed to load full project details:', err);
+        }
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -391,7 +397,11 @@ const ProjectsManager = ({ token }) => {
                     Array.isArray(projects) && projects.map(p => (
                         <div key={p.projectId} className="p-4 rounded-3xl bg-white/[0.02] border border-white/10 flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <img src={p.image} className="w-10 h-10 rounded-lg object-cover" />
+                                {p.image ? (
+                                    <img src={p.image} className="w-10 h-10 rounded-lg object-cover" />
+                                ) : (
+                                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-[8px] text-white/20">No Img</div>
+                                )}
                                 <div><h4 className="text-sm font-bold">{p.title}</h4><p className="text-[10px] text-white/40">{p.category}</p></div>
                             </div>
                             <div className="flex items-center gap-2 opacity-100 transition-all">

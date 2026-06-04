@@ -34,31 +34,6 @@ export default function Projects() {
 
   const [error, setError] = useState('');
 
-  const fetchProjectImage = async (projectId) => {
-    try {
-      const response = await fetch(`/api/projects/${projectId}/image`);
-      if (response.ok) {
-        // Handle both binary image and JSON responses
-        const contentType = response.headers.get('content-type');
-        let imageUrl;
-        
-        if (contentType && contentType.includes('image/')) {
-          // Binary image response - convert to blob URL
-          const blob = await response.blob();
-          imageUrl = URL.createObjectURL(blob);
-        } else {
-          // JSON response with BASE64 data
-          const data = await response.json();
-          imageUrl = data.image;
-        }
-        
-        setProjectImages(prev => ({ ...prev, [projectId]: imageUrl }));
-      }
-    } catch (err) {
-      console.error(`Failed to load image for project ${projectId}:`, err);
-    }
-  };
-
   const fetchProjects = async (page = 1) => {
     try {
       const response = await fetch(`/api/projects?page=${page}&limit=12`);
@@ -86,12 +61,10 @@ export default function Projects() {
         setTotalPages(data.totalPages);
         setCurrentPage(page);
         
-        // Set images directly from response (no extra API calls needed)
+        // Point images to the binary image endpoint (30-day browser cache via Cache-Control)
         const images = {};
         mapped.forEach(project => {
-          if (project.image) {
-            images[project.id] = project.image;
-          }
+          images[project.id] = `/api/projects/${project.id}/image`;
         });
         setProjectImages(prev => ({ ...prev, ...images }));
         
