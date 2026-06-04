@@ -1,1 +1,25 @@
-if(!self.define){let e,s={};const n=(n,i)=>(n=new URL(n+".js",i).href,s[n]||new Promise(s=>{if("document"in self){const e=document.createElement("script");e.src=n,e.onload=s,document.head.appendChild(e)}else e=n,importScripts(n),s()}).then(()=>{let e=s[n];if(!e)throw new Error(`Module ${n} didn’t register its module`);return e}));self.define=(i,o)=>{const r=e||("document"in self?document.currentScript.src:"")||location.href;if(s[r])return;let l={};const a=e=>n(e,r),t={module:{uri:r},exports:l,require:a};s[r]=Promise.all(i.map(e=>t[e]||a(e))).then(e=>(o(...e),l))}}define(["./workbox-07e28819"],function(e){"use strict";self.skipWaiting(),e.clientsClaim(),e.precacheAndRoute([{url:"Vorcaslogo.png",revision:"568aa3e043e81736a09b2cc52a5503d6"},{url:"vite.svg",revision:"8e3a10e157f75ada21ab742c022d5430"},{url:"registerSW.js",revision:"1872c500de691dce40960bb85481de07"},{url:"index.html",revision:"0e1a11806b1bd073411e16ee5ae0aa5f"},{url:"assets/Vorcasw-DhcCnLyw.png",revision:null},{url:"assets/Testimonials-COMA6agi.js",revision:null},{url:"assets/Team-WsqUhqfx.js",revision:null},{url:"assets/ProjectDetails-DB5qldBF.js",revision:null},{url:"assets/NotFound-BuV4PHr-.js",revision:null},{url:"assets/index-H5UJZ73r.css",revision:null},{url:"assets/index-DLDWukVd.js",revision:null},{url:"assets/index-42ANG6Sg.js",revision:null},{url:"assets/Career-BeLoWClg.js",revision:null},{url:"assets/briefcase-PGfsHRVM.js",revision:null},{url:"assets/AdminLogin-BzGw63As.js",revision:null},{url:"assets/AdminDashboard-D-0O3d4z.js",revision:null},{url:"vite.svg",revision:"8e3a10e157f75ada21ab742c022d5430"},{url:"Vorcaslogo.png",revision:"568aa3e043e81736a09b2cc52a5503d6"},{url:"manifest.webmanifest",revision:"0ee09a8c82ec782bc38c97480c8a0ff5"}],{}),e.cleanupOutdatedCaches(),e.registerRoute(new e.NavigationRoute(e.createHandlerBoundToURL("/index.html"),{denylist:[/\/api\//]})),e.registerRoute(/\/api\//i,new e.NetworkFirst({cacheName:"api-cache",networkTimeoutSeconds:10,plugins:[new e.ExpirationPlugin({maxEntries:50,maxAgeSeconds:300})]}),"GET"),e.registerRoute(/^https:\/\/fonts\.googleapis\.com\/.*/i,new e.CacheFirst({cacheName:"google-fonts-stylesheets",plugins:[new e.ExpirationPlugin({maxEntries:4,maxAgeSeconds:31536e3})]}),"GET"),e.registerRoute(/^https:\/\/fonts\.gstatic\.com\/.*/i,new e.CacheFirst({cacheName:"google-fonts-webfonts",plugins:[new e.ExpirationPlugin({maxEntries:8,maxAgeSeconds:31536e3})]}),"GET"),e.registerRoute(/^https:\/\/images\.unsplash\.com\/.*/i,new e.StaleWhileRevalidate({cacheName:"unsplash-images",plugins:[new e.ExpirationPlugin({maxEntries:50,maxAgeSeconds:2592e3})]}),"GET")});
+
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+});
+self.addEventListener('activate', (e) => {
+  self.registration.unregister()
+    .then(() => self.clients.matchAll())
+    .then((clients) => {
+      clients.forEach((client) => {
+        if (client instanceof WindowClient)
+          client.navigate(client.url);
+      });
+      return Promise.resolve();
+    })
+    .then(() => {
+      self.caches.keys().then((cacheNames) => {
+        Promise.all(
+          cacheNames.map((cacheName) => {
+            return self.caches.delete(cacheName);
+          }),
+        );
+      })
+    });
+});
+    

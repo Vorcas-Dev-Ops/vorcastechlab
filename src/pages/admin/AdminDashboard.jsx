@@ -275,7 +275,7 @@ const ProjectsManager = ({ token }) => {
                     </div>
 
                     {/* Previews Row */}
-                    {(mainImagePreview || detailImagesPreviews.length > 0) && (
+                    {(mainImagePreview || (Array.isArray(detailImagesPreviews) && detailImagesPreviews.length > 0)) && (
                         <div className="grid grid-cols-[150px_1fr] gap-6 p-4 bg-white/[0.02] border border-white/10 rounded-3xl animate-in zoom-in-95 duration-300">
                             <div className="space-y-2">
                                 <label className="text-[9px] uppercase font-bold text-white/30 ml-2">Banner Preview</label>
@@ -288,9 +288,9 @@ const ProjectsManager = ({ token }) => {
                                 )}
                             </div>
                             <div className="space-y-2">
-                                <label className="text-[9px] uppercase font-bold text-white/30 ml-2">Gallery Preview ({detailImagesPreviews.length})</label>
+                                <label className="text-[9px] uppercase font-bold text-white/30 ml-2">Gallery Preview ({Array.isArray(detailImagesPreviews) ? detailImagesPreviews.length : 0})</label>
                                 <div className="flex flex-wrap gap-3">
-                                    {detailImagesPreviews.map((url, i) => (
+                                    {Array.isArray(detailImagesPreviews) && detailImagesPreviews.map((url, i) => (
                                         <div key={i} className="w-20 h-20 rounded-xl overflow-hidden border border-white/10 bg-black shrink-0 relative group shadow-2xl">
                                             <img src={url} className="w-full h-full object-cover" alt={`Gallery ${i}`} />
                                             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all flex flex-col items-center justify-center gap-1.5">
@@ -303,7 +303,7 @@ const ProjectsManager = ({ token }) => {
                                             <div className="absolute bottom-1 right-1 bg-black/60 px-1 rounded text-[7px] text-white/50">{i + 1}</div>
                                         </div>
                                     ))}
-                                    {detailImagesPreviews.length === 0 && (
+                                    {Array.isArray(detailImagesPreviews) && detailImagesPreviews.length === 0 && (
                                         <div className="h-16 w-32 rounded-xl border border-dashed border-white/10 flex items-center justify-center text-[10px] text-white/20 italic">Gallery Empty</div>
                                     )}
                                 </div>
@@ -329,7 +329,7 @@ const ProjectsManager = ({ token }) => {
                     <div className="space-y-4">
                         <label className="text-xs font-bold uppercase tracking-wider text-white/60">Section Management (Order & Visibility)</label>
                         <div className="space-y-2">
-                            {formData.sectionsConfig.map((section, idx) => (
+                            {Array.isArray(formData.sectionsConfig) && formData.sectionsConfig.map((section, idx) => (
                                 <div key={section.id} className="flex items-center gap-4 p-3 bg-white/5 border border-white/10 rounded-xl">
                                     <div className="flex gap-1">
                                         <button type="button" onClick={() => moveSection(idx, -1)} disabled={idx === 0} className="p-1.5 bg-white/10 hover:bg-orange-500 rounded disabled:opacity-20"><ChevronRight size={14} className="rotate-180" /></button>
@@ -349,7 +349,7 @@ const ProjectsManager = ({ token }) => {
                     </div>
 
                     <div className="space-y-4">
-                        {formData.sectionsConfig.map((section) => {
+                        {Array.isArray(formData.sectionsConfig) && formData.sectionsConfig.map((section) => {
                             if (section.id === 'description') {
                                 return <textarea key="desc" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl h-24 text-xs" placeholder="Description" value={formData.description} onChange={e => setFormData({ ...formData, description: e.target.value })} required />
                             }
@@ -377,12 +377,12 @@ const ProjectsManager = ({ token }) => {
                     <div className="col-span-full p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-center text-sm text-white/50">
                         Loading projects...
                     </div>
-                ) : projects.length === 0 ? (
+                ) : !Array.isArray(projects) || projects.length === 0 ? (
                     <div className="col-span-full p-8 rounded-3xl bg-white/[0.03] border border-white/10 text-center text-sm text-white/50">
                         No projects found. Add a new project to get started.
                     </div>
                 ) : (
-                    projects.map(p => (
+                    Array.isArray(projects) && projects.map(p => (
                         <div key={p.projectId} className="p-4 rounded-3xl bg-white/[0.02] border border-white/10 flex items-center justify-between">
                             <div className="flex items-center gap-4">
                                 <img src={p.image} className="w-10 h-10 rounded-lg object-cover" />
@@ -501,7 +501,7 @@ const CareersManager = ({ token }) => {
             </aside>
 
             <div className="space-y-3">
-                {careers.map(c => (
+                {Array.isArray(careers) && careers.map(c => (
                     <div key={c.id} className="p-5 rounded-2xl bg-white/[0.02] border border-white/10 flex justify-between items-center group">
                         <div><h4 className="font-bold">{c.title}</h4><p className="text-xs text-white/40">{c.department} • {c.location}</p></div>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all">
