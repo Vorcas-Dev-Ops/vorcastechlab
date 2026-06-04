@@ -104,16 +104,23 @@
       </div>
     </div>
     <script>
-      // Remove preloader once React has mounted and DOM is ready
-      window.addEventListener('load', () => {
-        const root = document.getElementById('root');
-        const preloader = root?.querySelector('.preloader');
+      // Remove preloader immediately once DOM is parsed (don't wait for images)
+      document.addEventListener('DOMContentLoaded', function() {
+        var preloader = document.querySelector('.preloader');
         if (preloader) {
-          preloader.style.transition = 'opacity 0.4s ease';
+          preloader.style.transition = 'opacity 0.3s ease';
           preloader.style.opacity = '0';
-          setTimeout(() => preloader.remove(), 500);
+          setTimeout(function() { preloader.remove(); }, 300);
         }
       });
+      // Fallback: hide preloader after 3s even if DOMContentLoaded doesn't fire
+      setTimeout(function() {
+        var preloader = document.querySelector('.preloader');
+        if (preloader) {
+          preloader.style.opacity = '0';
+          setTimeout(function() { preloader.remove(); }, 300);
+        }
+      }, 3000);
     </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
