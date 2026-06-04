@@ -118,9 +118,10 @@ const ProjectsManager = ({ token }) => {
         setLoadingProjects(true);
         try {
             const { data } = await axios.get('/api/projects');
-            setProjects(data.projects);
+            setProjects(Array.isArray(data.projects) ? data.projects : []);
         } catch (error) {
             console.error(error);
+            setProjects([]);
         } finally {
             setLoadingProjects(false);
         }
@@ -408,8 +409,8 @@ const CareersManager = ({ token }) => {
     const [editingId, setEditingId] = useState(null);
 
     const fetchCareers = async () => {
-        try { const { data } = await axios.get('/api/careers'); setCareers(data); }
-        catch (error) { console.error(error); }
+        try { const { data } = await axios.get('/api/careers'); setCareers(Array.isArray(data) ? data : []); }
+        catch (error) { console.error(error); setCareers([]); }
     };
 
     useEffect(() => { fetchCareers(); }, []);
