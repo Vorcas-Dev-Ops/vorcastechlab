@@ -4,11 +4,23 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vorcas Tech Lab - Innovative & Timeless Design</title>
+    <meta name="description" content="Vorcas Tech Lab - Engineering the future of digital innovation with powerful web solutions, mobile apps, and custom software." />
+    <meta name="theme-color" content="#050505" />
+    <meta property="og:title" content="Vorcas Tech Lab - Innovative & Timeless Design" />
+    <meta property="og:description" content="Engineering the future of digital innovation with powerful web solutions, mobile apps, and custom software." />
+    <meta property="og:image" content="/Vorcaslogo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
     <link rel="icon" type="image/png" href="/Vorcaslogo.png" />
     <link rel="alternate icon" href="/Vorcaslogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com">
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="preload" as="image" href="/Vorcaslogo.png">
+    <link rel="preload" as="image" href="/assets/Vorcasw-DhcCnLyw.png">
+    <link rel="dns-prefetch" href="/api">
     <style>
       body {
         margin: 0;
@@ -62,24 +74,25 @@
       }
       .preloader-text {
         margin-top: 1.5rem;
-        font-size: 0.875rem;
-        letter-spacing: 0.25em;
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.3em;
         text-transform: uppercase;
-        color: #f97316;
-        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        color: #fb923c;
+        animation: pulse 2s ease-in-out infinite;
       }
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
       @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: 0.5; }
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.05); }
       }
     </style>
-    <script type="module" crossorigin src="/assets/index-R-yM_8rh.js"></script>
-    <link rel="stylesheet" crossorigin href="/assets/index-CnpyoIHb.css">
-  </head>
+    <script type="module" crossorigin src="/assets/index-BhOis3Ae.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-JcKrCDU1.css">
+  <link rel="manifest" href="/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/registerSW.js"></script></head>
   <body>
     <div id="root">
       <div class="preloader">
@@ -91,6 +104,18 @@
         </div>
         <div class="preloader-text">Loading</div>
       </div>
-    </div>
+    </div>
+    <script>
+      // Remove preloader once React has mounted and DOM is ready
+      window.addEventListener('load', () => {
+        const root = document.getElementById('root');
+        const preloader = root?.querySelector('.preloader');
+        if (preloader) {
+          preloader.style.transition = 'opacity 0.4s ease';
+          preloader.style.opacity = '0';
+          setTimeout(() => preloader.remove(), 500);
+        }
+      });
+    </script>
   </body>
 </html>

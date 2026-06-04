@@ -1,31 +1,34 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Facebook, Instagram, Linkedin } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
 
-/* ── Animation variants ─────────────────────────────────────── */
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (delay = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
-  }),
-};
- 
-const bigTextVariant = {
-  hidden: { y: "105%", opacity: 0 },
-  visible: {
-    y: "0%",
-    opacity: 1,
-    transition: { duration: 1.1, ease: [0.16, 1, 0.3, 1], delay: 0.15 },
-  },
-};
+function useInViewOnce(ref) {
+  const [inView, setInView] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          observer.unobserve(el);
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+
+  return inView;
+}
 
 export default function Footer() {
   const footerRef = useRef(null);
-  /* once:true → fires only the first time the footer enters view */
-  const inView = useInView(footerRef, { once: false, amount: 0.1 });
+  const inView = useInViewOnce(footerRef);
 
   return (
     <div className="relative md:sticky bottom-0 z-10 w-full overflow-hidden pointer-events-auto">
@@ -34,16 +37,10 @@ export default function Footer() {
         className="relative bg-orange-600 text-white pt-8 sm:pt-16 pb-4 sm:pb-6 px-6 md:px-12 lg:px-24 flex flex-col min-h-fit sm:min-h-[50vh] justify-between"
       >
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center w-full">
-          {/* ────── DESKTOP VIEW ─────────────────────────────────────── */}
+          {/* DESKTOP VIEW */}
           <div className="hidden md:flex flex-col items-center w-full">
             {/* LOGO + SOCIAL */}
-            <motion.div
-              variants={fadeUp}
-              custom={0}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              className="flex flex-row items-center justify-center gap-6 lg:gap-10 mb-8"
-            >
+            <div className={`flex flex-row items-center justify-center gap-6 lg:gap-10 mb-8 transition-all duration-700 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <h2 className="text-2xl lg:text-4xl xl:text-5xl font-bold tracking-tight">
                 Vorcas Tech<span className="text-black">Lab</span>
               </h2>
@@ -59,16 +56,10 @@ export default function Footer() {
                   <Instagram className="w-5 h-5 lg:w-7 lg:h-7" />
                 </a>
               </div>
-            </motion.div>
+            </div>
 
             {/* GRID LINKS */}
-            <motion.div
-              variants={fadeUp}
-              custom={0.18}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              className="grid grid-cols-3 gap-8 lg:gap-12 text-center max-w-5xl w-full mb-8"
-            >
+            <div className={`grid grid-cols-3 gap-8 lg:gap-12 text-center max-w-5xl w-full mb-8 transition-all duration-700 delay-150 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               {/* COMPANY */}
               <div className="flex flex-col items-center">
                 <h3 className="text-2xl lg:text-3xl font-bold mb-4 lg:mb-6 text-black">Company</h3>
@@ -100,19 +91,13 @@ export default function Footer() {
                   <li><Link to="/contact" className="hover:text-black transition-colors">Support</Link></li>
                 </ul>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* ────── MOBILE VIEW ─────────────────────────────────────── */}
+          {/* MOBILE VIEW */}
           <div className="flex md:hidden flex-col items-center w-full">
             {/* LOGO */}
-            <motion.div
-              variants={fadeUp}
-              custom={0}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              className="flex flex-col items-center gap-4 mb-10"
-            >
+            <div className={`flex flex-col items-center gap-4 mb-10 transition-all duration-700 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               <h2 className="text-[28px] font-bold tracking-tight">
                 Vorcas Tech<span className="text-black">Lab</span>
               </h2>
@@ -128,16 +113,10 @@ export default function Footer() {
                   <Instagram className="w-6 h-6" />
                 </a>
               </div>
-            </motion.div>
+            </div>
 
             {/* GRID LINKS FOR MOBILE  */}
-            <motion.div
-              variants={fadeUp}
-              custom={0.18}
-              initial="hidden"
-              animate={inView ? "visible" : "hidden"}
-              className="grid grid-cols-3 gap-x-2 gap-y-12 text-center w-full mb-10"
-            >
+            <div className={`grid grid-cols-3 gap-x-2 gap-y-12 text-center w-full mb-10 transition-all duration-700 delay-150 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
               {/* COMPANY */}
               <div className="flex flex-col items-center">
                 <h3 className="text-sm font-extrabold mb-4 text-black underline decoration-2 underline-offset-8">Company</h3>
@@ -169,32 +148,21 @@ export default function Footer() {
                   <li><Link to="/contact">Support</Link></li>
                 </ul>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
-        {/* BIG BACKGROUND TEXT — Responsive size */}
+        {/* BIG BACKGROUND TEXT */}
         <div className="overflow-hidden w-full mt-4">
-          <motion.h1
-            variants={bigTextVariant}
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            className="w-full text-center leading-none text-[20vw] md:text-[15vw] font-extrabold text-white/100 tracking-tight pointer-events-none select-none"
-          >
+          <h1 className={`w-full text-center leading-none text-[20vw] md:text-[15vw] font-extrabold text-white/100 tracking-tight pointer-events-none select-none transition-all duration-1000 delay-300 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'}`}>
             VORCAS
-          </motion.h1>
+          </h1>
         </div>
 
         {/* COPYRIGHT */}
-        <motion.div
-          variants={fadeUp}
-          custom={0.5}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          className="text-center text-black text-xs sm:text-sm lg:text-lg mt-4"
-        >
-          © {new Date().getFullYear()} Vorcas TechLab — All Rights Reserved.
-        </motion.div>
+        <p className={`text-center text-black text-xs sm:text-sm lg:text-lg mt-4 transition-all duration-700 delay-500 ${inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          &copy; {new Date().getFullYear()} Vorcas TechLab &mdash; All Rights Reserved.
+        </p>
       </footer>
     </div>
   );

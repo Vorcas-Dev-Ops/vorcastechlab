@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import SEO from './SEO';
 
 const projectDetails = {
   rently: {
@@ -16,10 +15,9 @@ const projectDetails = {
       'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?auto=format&fit=crop&w=800&q=80'
     ],
     description: `Rently is a premium real estate and hospitality template built in React, crafted for property managers, boutique agencies, and hosts who want to showcase exceptional stays through design, storytelling, and seamless presentation.`,
-    approach: `Rently was created with a clear purpose — to transform how real estate is experienced online. My approach blends visual storytelling, precision layout systems, and human-centered design principles to create a platform that feels as sophisticated as the properties it showcases. Rently doesn’t just list spaces — it evokes a sense of place, helping users imagine life within them.`,
+    approach: `Rently was created with a clear purpose — to transform how real estate is experienced online. My approach blends visual storytelling, precision layout systems, and human-centered design principles to create a platform that feels as sophisticated as the properties it showcases. Rently doesn't just list spaces — it evokes a sense of place, helping users imagine life within them.`,
     siteUrl: 'https://rently-realestate.netlify.app'
   },
-  // Add fallback or other items
   default: {
     title: 'Premium Web Project',
     category: 'Web Design',
@@ -36,6 +34,31 @@ const projectDetails = {
   }
 };
 
+function useRevealAnimation() {
+  const initialized = useRef(false);
+
+  useEffect(() => {
+    if (initialized.current) return;
+    initialized.current = true;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const elements = document.querySelectorAll('.reveal-up, .reveal-scale, .reveal-left, .reveal-right, .reveal-opacity');
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, []);
+}
+
 export default function ProjectDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -51,9 +74,9 @@ export default function ProjectDetails() {
   const [loading, setLoading] = useState(initialData ? false : true);
   const [notFound, setNotFound] = useState(false);
 
-  useEffect(() => {
-    AOS.init({ once: true, duration: 800, easing: 'ease-out-cubic' });
+  useRevealAnimation();
 
+  useEffect(() => {
     const getProject = async () => {
       if (projectDetails[id]) {
         setData(projectDetails[id]);
@@ -118,16 +141,16 @@ export default function ProjectDetails() {
         <div className="flex flex-col items-center justify-center text-center relative mb-16">
           <button
             onClick={() => navigate('/projects')}
-            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors bg-white/5 py-2 px-4 rounded-full border border-white/10"
-            data-aos="fade-right"
+            className="absolute left-0 top-1/2 -translate-y-1/2 flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors bg-white/5 py-2 px-4 rounded-full border border-white/10 reveal-left"
+            style={{ transitionDelay: '0ms' }}
           >
             <ArrowLeft size={16} /> Back to Projects
           </button>
-          <h1 className="text-4xl md:text-5xl font-bold" data-aos="fade-down">{data.title}</h1>
+          <h1 className="text-4xl md:text-5xl font-bold reveal-up" style={{ transitionDelay: '100ms' }}>{data.title}</h1>
         </div>
 
         {data.image && (
-          <div className="mb-16 overflow-hidden rounded-[2rem] bg-white/5 border border-white/10" data-aos="fade-up">
+          <div className="mb-16 overflow-hidden rounded-[2rem] bg-white/5 border border-white/10 reveal-up" style={{ transitionDelay: '200ms' }}>
             <img src={data.image} alt={data.title} className="w-full h-[450px] object-cover" />
           </div>
         )}
@@ -139,9 +162,8 @@ export default function ProjectDetails() {
               {data.images && Array.isArray(data.images) && data.images.map((img, idx) => (
                 <div
                   key={idx}
-                  className="aspect-[3/4] md:aspect-[4/5] overflow-hidden rounded-[2rem] bg-white/5"
-                  data-aos="fade-up"
-                  data-aos-delay={idx * 150}
+                  className="aspect-[3/4] md:aspect-[4/5] overflow-hidden rounded-[2rem] bg-white/5 reveal-up"
+                  style={{ transitionDelay: `${idx * 150}ms` }}
                 >
                   <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
                 </div>
@@ -152,7 +174,7 @@ export default function ProjectDetails() {
           const DetailsSection = (
             <div className="flex flex-col md:flex-row gap-16 lg:gap-32 mb-20" key="details">
               {/* Left Metadata Column */}
-              <div className="md:w-[250px] shrink-0" data-aos="fade-right" data-aos-delay="300">
+              <div className="md:w-[250px] shrink-0 reveal-left" style={{ transitionDelay: '300ms' }}>
                 <div className="space-y-4 text-sm mb-10">
                   <div className="grid grid-cols-[100px_1fr] border-b border-white/10 pb-4">
                     <span className="text-white/50">Category:</span>
@@ -206,7 +228,7 @@ export default function ProjectDetails() {
               </div>
 
               {/* Right Content Column */}
-              <div className="flex-1" data-aos="fade-up" data-aos-delay="400">
+              <div className="flex-1 reveal-up" style={{ transitionDelay: '400ms' }}>
                 {(data.sectionsConfig || [
                   { id: 'description', enabled: true, label: 'Description' },
                   { id: 'approach', enabled: true, label: 'Approach' }

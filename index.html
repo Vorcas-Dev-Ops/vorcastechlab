@@ -18,6 +18,9 @@
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+    <link rel="preload" as="image" href="/Vorcaslogo.png">
+    <link rel="preload" as="image" href="/src/assets/Vorcasw.png">
+    <link rel="dns-prefetch" href="/api">
     <style>
       body {
         margin: 0;
@@ -75,7 +78,7 @@
         font-weight: 700;
         letter-spacing: 0.3em;
         text-transform: uppercase;
-        color: #fb923c; /* Brighter orange for better contrast */
+        color: #fb923c;
         animation: pulse 2s ease-in-out infinite;
       }
       @keyframes spin {
@@ -100,6 +103,18 @@
         <div class="preloader-text">Loading</div>
       </div>
     </div>
+    <script>
+      // Remove preloader once React has mounted and DOM is ready
+      window.addEventListener('load', () => {
+        const root = document.getElementById('root');
+        const preloader = root?.querySelector('.preloader');
+        if (preloader) {
+          preloader.style.transition = 'opacity 0.4s ease';
+          preloader.style.opacity = '0';
+          setTimeout(() => preloader.remove(), 500);
+        }
+      });
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

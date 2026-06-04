@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Lock, User, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const sanitizeErrorMessage = (raw) => {
     let message = '';
@@ -67,10 +66,8 @@ const AdminLogin = () => {
              {/* Background Glow */}
              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-500/10 blur-[150px] rounded-full"></div>
 
-             <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-full max-w-md bg-white/[0.03] backdrop-blur-3xl border border-white/5 p-12 rounded-[2.5rem] relative z-10"
+             <div 
+                className="w-full max-w-md bg-white/[0.03] backdrop-blur-3xl border border-white/5 p-12 rounded-[2.5rem] relative z-10 animate-fade-in-up"
              >
                 <div className="text-center mb-10">
                     <div className="inline-flex p-4 rounded-full bg-orange-500/10 mb-6 text-orange-500">
@@ -132,7 +129,7 @@ const AdminLogin = () => {
                         ← Back to Website
                     </button>
                 </div>
-             </motion.div>
+             </div>
         </div>
     );
 };

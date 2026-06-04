@@ -20,11 +20,7 @@ import {
 } from "react-icons/si";
 
 import { FaJava, FaAws } from "react-icons/fa";
-import { motion } from "framer-motion";
 
-/* -------------------------------
-   Custom Miro SVG Icon Component
---------------------------------- */
 const MiroIcon = () => (
   <svg
     width="26"
@@ -48,30 +44,8 @@ const MiroIcon = () => (
   </svg>
 );
 
-/* Floating animation */
-const floatAnim = {
-  animate: {
-    y: [-4, 4, -4],
-    transition: {
-      duration: 4,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-};
-
-/* Fade animation */
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6 } },
-};
-
 const TechCard = ({ t }) => (
-  <motion.div
-    whileHover={{ scale: 1.2, y: -5 }}
-    className="relative group flex flex-col items-center justify-center gap-3 cursor-pointer py-4 mx-12 transition-all duration-500"
-  >
-    {/* Hover Glow (Now centered behind icon) */}
+  <div className="relative group flex flex-col items-center justify-center gap-3 cursor-pointer py-4 mx-12 transition-all duration-500 hover:scale-110 hover:-translate-y-1">
     <div
       className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none scale-150"
       style={{
@@ -86,7 +60,7 @@ const TechCard = ({ t }) => (
     <p className="text-zinc-300 group-hover:text-white font-black text-[9px] md:text-[10px] uppercase tracking-[0.3em] relative z-10 transition-colors duration-500 group-hover:opacity-100">
       {t.name}
     </p>
-  </motion.div>
+  </div>
 );
 
 export default function TechStack() {
@@ -118,49 +92,29 @@ export default function TechStack() {
     <section className="w-full bg-black py-24 overflow-hidden scroll-mt-24" id="tech-stack">
 
       <div className="max-w-6xl mx-auto px-6 mb-20 text-center md:text-left">
-        <motion.div
-           initial={{ opacity: 0, x: -20 }}
-           whileInView={{ opacity: 1, x: 0 }}
-           viewport={{ once: true }}
-           className="inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black tracking-[0.2em] text-orange-500 uppercase mb-6"
-        >
+        <div className="reveal-up inline-block px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[10px] font-black tracking-[0.2em] text-orange-500 uppercase mb-6">
           Our Capabilities
-        </motion.div>
-        <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-white text-4xl md:text-6xl font-black tracking-tighter"
-        >
+        </div>
+        <h2 className="reveal-up delay-100 text-white text-4xl md:text-6xl font-black tracking-tighter">
           High-Performance <span className="text-orange-600">Tech Stack</span>
-        </motion.h2>
+        </h2>
       </div>
 
       <div className="flex flex-col gap-8">
-        {/* Row 1: Left Moving */}
         <div className="flex overflow-hidden group">
-          <motion.div 
-            animate={{ x: [0, -1000] }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="flex whitespace-nowrap"
-          >
+          <div className="flex whitespace-nowrap animate-ticker">
             {[...techRow1, ...techRow1].map((t, i) => (
               <TechCard key={i} t={t} />
             ))}
-          </motion.div>
+          </div>
         </div>
 
-        {/* Row 2: Right Moving */}
         <div className="flex overflow-hidden group">
-          <motion.div 
-            animate={{ x: [-1000, 0] }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="flex whitespace-nowrap"
-          >
+          <div className="flex whitespace-nowrap animate-ticker-reverse">
             {[...techRow2, ...techRow2].map((t, i) => (
               <TechCard key={i} t={t} />
             ))}
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>

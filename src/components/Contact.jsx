@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Send, Mail, Phone, MapPin, User, LayoutGrid, MessageSquare, ArrowRight, Sparkles } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 const Contact = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,11 +19,8 @@ const Contact = () => {
     { id: 'custom-software', label: 'Custom Software' },
     { id: 'ai-automation', label: 'AI & Automation' },
     { id: 'e-commerce', label: 'E-Commerce Store' },
-    { id: 'cloud-solutions', label: 'Cloud Solutions' },
-    { id: 'cybersecurity', label: 'Cybersecurity' },
-    { id: 'qa-testing', label: 'Quality Assurance' },
-    { id: 'tech-consultation', label: 'Technical Consultation' },
-    { id: 'brand-identity', label: 'Brand Identity' }
+
+
   ];
 
 
@@ -97,7 +93,7 @@ const Contact = () => {
             <div className="space-y-3">
               {[
                 { icon: <Mail size={16} />, label: "Email Us", val: "support@vorcastechlab.com", link: "mailto:support@vorcastechlab.com" },
-                { icon: <Phone size={16} />, label: "Call Us", val: "+91 81231 39994", link: "tel:+918123139994" },
+                { icon: <Phone size={16} />, label: "Call Us", val: "+91 8123139994", link: "tel:+91 8123139994" },
                 { icon: <MapPin size={16} />, label: "Visit Us", val: "2nd Floor, Plot No-29, Thambu Chetty Palya Main Rd, Akshaya Nagar 1st Block, Akshaya Nagar, Ramamurthy Nagar, Bengaluru, Karnataka 560016", link: "#" }
               ].map((item, idx) => (
                 <a
@@ -109,7 +105,7 @@ const Contact = () => {
                     {item.icon}
                   </div>
                   <div>
-                    <span className="block text-[9px] uppercase font-bold text-white/50 tracking-widest leading-none mb-1">{item.label}</span>
+                    <span className="block text-[9px] uppercase font-bold text-white/20 tracking-widest leading-none mb-1">{item.label}</span>
                     <span className="block text-[13px] font-medium text-white/80 group-hover:text-white transition-colors">{item.val}</span>
                   </div>
                 </a>
@@ -128,11 +124,7 @@ const Contact = () => {
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, white 1px, transparent 0)', backgroundSize: '16px 16px' }}></div>
 
                 {status.success ? (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="relative z-10 flex flex-col items-center justify-center py-12 text-center space-y-4"
-                  >
+                  <div className="relative z-10 flex flex-col items-center justify-center py-12 text-center space-y-4 animate-fade-in-scale">
                     <div className="w-16 h-16 rounded-full bg-orange-500/20 flex items-center justify-center text-orange-500 mb-2">
                       <Sparkles size={32} />
                     </div>
@@ -144,7 +136,7 @@ const Contact = () => {
                     >
                       Send Another
                     </button>
-                  </motion.div>
+                  </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-4">
                     {(formError || (status.message && !status.success)) && (
@@ -153,7 +145,7 @@ const Contact = () => {
                       </div>
                     )}
                     <div className="space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Your Name</label>
+                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Your Name</label>
                       <div className="relative group/input">
                         <User size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <input
@@ -169,7 +161,7 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Email Address</label>
+                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Email Address</label>
                       <div className="relative group/input">
                         <Mail size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <input
@@ -185,7 +177,7 @@ const Contact = () => {
                     </div>
 
                     <div className="space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Phone Number</label>
+                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Phone Number</label>
                       <div className="relative group/input">
                         <Phone size={14} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <input
@@ -194,14 +186,14 @@ const Contact = () => {
                           value={formData.phone}
                           onChange={handleChange}
                           required
-                          placeholder="+91 00000 00000"
+                          placeholder="+1 (000) 000-0000"
                           className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-11 pr-4 text-sm focus:outline-none focus:border-orange-500/50 focus:bg-white/[0.08] transition-all"
                         />
                       </div>
                     </div>
 
                     <div className="space-y-1.5 relative">
-                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Service Type</label>
+                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Service Type</label>
                       <div
                         onClick={() => setIsOpen(!isOpen)}
                         className="relative group/input cursor-pointer"
@@ -242,7 +234,7 @@ const Contact = () => {
 
 
                     <div className="md:col-span-2 space-y-1.5">
-                      <label className="text-[9px] uppercase font-black text-white/50 tracking-[0.1em] ml-1">Project Details</label>
+                      <label className="text-[9px] uppercase font-black text-white/30 tracking-[0.1em] ml-1">Project Details</label>
                       <div className="relative group/input">
                         <MessageSquare size={14} className="absolute left-4 top-4 text-white/20 group-focus-within/input:text-orange-500 transition-colors" />
                         <textarea
